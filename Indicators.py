@@ -48,3 +48,35 @@ def EMA(data, period):
             result.append(ema)
     return result
 
+
+# Moving average convergence/divergence
+# https://en.wikipedia.org/wiki/MACD
+# usuall take 12,26,9, but u can take 5,35,5 for more risky trading
+def MACD(data, shortperiod, longperiod, signalperiod):
+    macd, macdsignal, macdhist = [], [], []
+
+    short_ema = EMA(data, shortperiod)
+    long_ema = EMA(data, longperiod)
+
+    diff = []
+
+    for k, short in enumerate(short_ema):
+        if math.isnan(short) or math.isnan(long_ema[k]):
+            macd.append(math.nan)
+            macdsignal.append(math.nan)
+        else:
+            macd.append(short - long_ema[k])
+            diff.append(macd[k])
+
+    diff_ema = EMA(diff, signalperiod)
+    macdsignal = macdsignal + diff_ema
+
+    for k, ms in enumerate(macdsignal):
+        if math.isnan(ms) or math.isnan(macd[k]):
+            macdhist.append(math.nan)
+        else:
+            macdhist.append(macd[k] - macdsignal[k])
+
+    return macd, macdsignal, macdhist
+
+
