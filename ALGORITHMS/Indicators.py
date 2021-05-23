@@ -8,7 +8,7 @@ import json
 
 # Simple moving average
 # https://en.wikipedia.org/wiki/Moving_average
-def SMA(data, period):  
+def SMA(data, period):
     if len(data) == 0:
         raise Exception("Empty data")
     if period <= 0:
@@ -91,11 +91,11 @@ def RSI(data, period):
             u_days.append(0)
             d_days.append(0)
         else:
-            if data[i] > data[i-1] :
-                u_days.append(data[i] - data[i-1])
+            if data[i] > data[i - 1]:
+                u_days.append(data[i] - data[i - 1])
                 d_days.append(0)
-            elif data[i] < data[i-1]:
-                d_days.append(data[i-1] - data[i])
+            elif data[i] < data[i - 1]:
+                d_days.append(data[i - 1] - data[i])
                 u_days.append(0)
             else:
                 u_days.append(0)
@@ -110,6 +110,6 @@ def RSI(data, period):
         if ema_d[k] == 0:
             result.append(100)
         else:
-            result.append(100 - (100 / (1 + ema_u[k]/ema_d[k])))
+            result.append(100 - (100 / (1 + ema_u[k] / ema_d[k])))
 
     return result

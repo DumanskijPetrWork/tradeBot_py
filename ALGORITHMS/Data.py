@@ -47,5 +47,6 @@ def getAllQuotes(ticker, start, end):
     df = df.reset_index()
     return df
 
+
 df = getAllQuotes('SBER.ME', dt.datetime(2019, 1, 1), dt.datetime(2021, 5, 1))
 print(df)

@@ -1,11 +1,5 @@
 # Динамический парсер котировок
-
-# pip3 install streamlit
-# pip3 install alpha_vantage
-# pip3 install datetime
-# pip3 install quandl
-# pip3 install pandas
-import streamlit as st
+#import streamlit as st
 from alpha_vantage.timeseries import TimeSeries
 from datetime import datetime
 import quandl
@@ -16,12 +10,16 @@ quandl.ApiConfig.api_key = "BVUhMmoct3_Xx-RaEyhP"
 ts = TimeSeries(key='7G78R3MUA3M941WF', output_format='pandas')
 
 # Временные рамки и тикер
-ticker = st.sidebar.text_input("Ticker", 'MSFT').upper()
-end_date = st.sidebar.date_input('end date', value=datetime.now()).strftime("%Y-%m-%d")
-start_date = st.sidebar.date_input('start date', value=datetime(2021, 1, 1)).strftime("%Y-%m-%d")
+#ticker = st.sidebar.text_input("Ticker", 'MSFT').upper()
+#end_date = st.sidebar.date_input('end date', value=datetime.now()).strftime("%Y-%m-%d")
+#start_date = st.sidebar.date_input('start date', value=datetime(2021, 1, 1)).strftime("%Y-%m-%d")
+#временно
+ticker='MSFT'
+end_date=datetime.now().strftime("%Y-%m-%d")
+start_date=datetime(2021, 3, 1).strftime("%Y-%m-%d")
 
 # Кеширующий декоратор
-@st.cache(suppress_st_warning=True, allow_output_mutation=True)
+#@st.cache(suppress_st_warning=True, allow_output_mutation=True)
 def get_ticker_daily(ticker_input):
     ticker_data, ticker_metadata = ts.get_daily(symbol=ticker_input, outputsize='full')
     return ticker_data, ticker_metadata
@@ -64,10 +62,12 @@ sharpe = stock_excess_return / stock_volatility
 metrics_df = pd.DataFrame(data={'mkt correlation': [stock_market_correlation], 'alpha': [alpha], 'beta': [beta], 'Sharpe ratio': [sharpe]})
 metrics_df.index = [ticker]
 
-st.markdown(md_chart_1)
-st.line_chart(price_data_filtered['4. close'])
-st.markdown(md_chart_2)
-st.line_chart(price_data_filtered['change'])
+#st.markdown(md_chart_1)
+#st.line_chart(price_data_filtered['4. close'])
+#st.markdown(md_chart_2)
+#st.line_chart(price_data_filtered['change'])
 
-st.table(metrics_df)
-print(st)
+#st.table(metrics_df)
+
+print(beta)
+print(alpha)

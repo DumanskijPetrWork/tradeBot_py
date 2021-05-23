@@ -1,15 +1,8 @@
 import math
-import datetime as dt
 import json
 
-
-import Data
-import Indicators
-
-
-
-
-
+import Data        # внутренний модуль
+import Indicators  # внутренний модуль
 
 
 # window from 200 for better result
@@ -22,14 +15,13 @@ def Strategy_SMA(ticker, start, end, capital, window):
     startUpCapital = capital
     amountOfStocks = 0
 
-
     sma = Indicators.SMA(data, window)
 
     for i in range(lengthOfData - 1):
 
         # sell
         if (sma[i + 1] >= data[i + 1] and sma[i] < data[i]):
-            if (i < lengthOfData - 2 and amountOfStocks!=0):
+            if (i < lengthOfData - 2 and amountOfStocks != 0):
                 capital += amountOfStocks * data[i + 2]
                 amountOfStocks = 0
 
@@ -43,7 +35,6 @@ def Strategy_SMA(ticker, start, end, capital, window):
 
     print(f'start-up capital = {startUpCapital}\ntotal capital = {totalCapital}')
     return
-
 
 
 def Strategy_byeAndHold(ticker, start, end, capital):
@@ -131,4 +122,3 @@ def Strategy_EMA(ticker, start, end, capital):
     print(f'start-up capital = {startUpCapital}\ntotal capital = {totalCapital}')
     print(f'there were {startUpAmountOfStocks} stocks and {startCapitalAfterBuy} rubles at the start')
     print(f'became {amountOfStocks} stocks and {capital} rubles at the end')
-

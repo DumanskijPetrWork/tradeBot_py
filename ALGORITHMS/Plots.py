@@ -1,7 +1,6 @@
-import Strategy
 import matplotlib.pyplot as plt
-import Indicators
-import Data
+import Indicators  # внутренний модуль
+import Data        # внутренний модуль
 import datetime as dt
 
 
