@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets, Qt
+
 from DATA.tradeBot_parser_static import *
 
 class Ui_MainWindow(object):
@@ -18,7 +19,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.runButton = QtWidgets.QPushButton(self.centralwidget)
-        self.runButton.setGeometry(QtCore.QRect(20, 440, 250, 80))
+        self.runButton.setGeometry(20, 440, 250, 80)
         font = QtGui.QFont()
         font.setFamily("Montserrat")
         font.setPointSize(24)
@@ -68,14 +69,16 @@ class Ui_MainWindow(object):
         self.tickerEdit.setFrame(False)
         self.tickerEdit.setCursorPosition(6)
         self.tickerEdit.setObjectName("tickerEdit")
+        # self.tickerEdit.
         self.dateEdit_from = QtWidgets.QDateEdit(self.centralwidget)
         self.dateEdit_from.setGeometry(QtCore.QRect(20, 120, 250, 80))
+        self.dateEdit_from.setFocusPolicy()
         font = QtGui.QFont()
         font.setFamily("Montserrat")
         font.setPointSize(24)
-        font.setBold(False)
+        font.setBold(True)
         font.setItalic(False)
-        font.setWeight(9)
+        font.setWeight(75)
         self.dateEdit_from.setFont(font)
         self.dateEdit_from.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.dateEdit_from.setFocusPolicy(QtCore.Qt.WheelFocus)
@@ -129,14 +132,14 @@ class Ui_MainWindow(object):
 "  padding: 10px;\n"
 "  selection-background-color: rgb(39, 44, 54);\n"
 "}")
-        self.comboBox.setCurrentText("ALGORITHM")
+        self.comboBox.setCurrentText("ALGO")
         self.comboBox.setFrame(False)
         self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
+        # self.comboBox.setPlaceholderText("ALGO")
+        self.comboBox.addItem("SMA")
+        self.comboBox.addItem("buyAndHold")
+        self.comboBox.addItem("twoSMA")
+        self.comboBox.addItem("EMA")
         self.GraphicField = QtWidgets.QWidget(self.centralwidget)
         self.GraphicField.setGeometry(QtCore.QRect(310, 20, 650, 380))
         font = QtGui.QFont()
@@ -144,19 +147,22 @@ class Ui_MainWindow(object):
         font.setPointSize(14)
         self.GraphicField.setFont(font)
         self.GraphicField.setObjectName("GraphicField")
-        self.statesField = QtWidgets.QLabel(self.centralwidget)
+        self.statesField = QtWidgets.QTextBrowser(self.centralwidget)
         self.statesField.setGeometry(QtCore.QRect(310, 440, 650, 80))
         font = QtGui.QFont()
         font.setFamily("Montserrat")
-        font.setPointSize(14)
+        font.setPointSize(18)
         font.setBold(True)
         font.setWeight(75)
         self.statesField.setFont(font)
         self.statesField.setStyleSheet("color: rgb(255, 255, 255);\n"
                                        "border: 1px solid white;\n"
-                                       "border-radius: 5px;")
+                                       "border-radius: 5px;\n"
+                                       "padding: 10px;")
         self.statesField.setText("")
+        # self.statesField.setLineWrapMode(0)
         self.statesField.setObjectName("statesField")
+        # self.statesField.setWordWrap(True)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -174,11 +180,11 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "Trade Bot"))
         self.runButton.setText(_translate("MainWindow", "RUN"))
         self.tickerEdit.setText(_translate("MainWindow", "SBER.ME"))
-        self.comboBox.setItemText(0, _translate("MainWindow", "ALGORITHM"))
-        self.comboBox.setItemText(1, _translate("MainWindow", "SMA"))
-        self.comboBox.setItemText(2, _translate("MainWindow", "buyAndHold"))
-        self.comboBox.setItemText(3, _translate("MainWindow", "twoSMA"))
-        self.comboBox.setItemText(4, _translate("MainWindow", "EMA"))
+        # Это все убрать!!!
+        # self.comboBox.setItemText(0, _translate("MainWindow", "SMA"))
+        # self.comboBox.setItemText(1, _translate("MainWindow", "buyAndHold"))
+        # self.comboBox.setItemText(2, _translate("MainWindow", "twoSMA"))
+        # self.comboBox.setItemText(3, _translate("MainWindow", "EMA"))
 
     # Функция обработки нажатий кнопок
     def set_actions(self):
@@ -190,20 +196,27 @@ class Ui_MainWindow(object):
     # Функция получения данных при нажатии кнопки
     def build_data(self):
         try:
-            print("Button's been pressed.")
-            if (self.ticker_prev != self.tickerEdit.text() or
-                self.date_from_prev != self.dateEdit_from.text() or
-                self.date_to_prev != self.dateEdit_to.text()):
-                data = get_quotesY(self.tickerEdit.text(),     # Тикер
-                                   dt.datetime.strftime(dt.datetime.strptime(self.dateEdit_from.text(), '%d.%m.%Y'), '%Y-%m-%d'),  # Дата начала
-                                   dt.datetime.strftime(dt.datetime.strptime(self.dateEdit_to.text(), '%d.%m.%Y'), '%Y-%m-%d'),    # Дата конца
-                                   "1d")                       # Временной интервал
-                print("data's been received.")
-                self.ticker_prev = self.tickerEdit.text()
-                self.date_from_prev = self.dateEdit_from.text()
-                self.date_to_prev = self.dateEdit_to.text()
+            a = 1/0
         except Exception as err:
             print(err)
+            self.statesField.setText(f"<span style=\"color:#ff0000;\">WARNING:</span> {err}")
+            self.statesField.setText("txt \n\n\n\n\n\n\n\n\n\n\ntst")
+        # try:
+        #     print("Button's been pressed.")
+        #     if (self.ticker_prev != self.tickerEdit.text() or
+        #         self.date_from_prev != self.dateEdit_from.text() or
+        #         self.date_to_prev != self.dateEdit_to.text()):
+        #         data = get_quotesY(self.tickerEdit.text(),     # Тикер
+        #                            dt.datetime.strftime(dt.datetime.strptime(self.dateEdit_from.text(), '%d.%m.%Y'), '%Y-%m-%d'),  # Дата начала
+        #                            dt.datetime.strftime(dt.datetime.strptime(self.dateEdit_to.text(), '%d.%m.%Y'), '%Y-%m-%d'),    # Дата конца
+        #                            "1d")                       # Временной интервал
+        #         print("data's been received.")
+        #         self.ticker_prev = self.tickerEdit.text()
+        #         self.date_from_prev = self.dateEdit_from.text()
+        #         self.date_to_prev = self.dateEdit_to.text()
+        # except Exception as err:
+        #     print(err)
+
         # else:
         #     self.graphic_show()
 
