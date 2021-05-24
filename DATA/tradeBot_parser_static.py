@@ -1,11 +1,6 @@
 # Статический парсер котировок
 
-# pip3 install pandas-datareader
-# pip3 install datetime
-# pip3 install yfinance
-# pip3 install json
-# import pandas_datareader as web
-import pandas as web
+import pandas_datareader as web
 import datetime as dt
 import yfinance as yf
 import json
@@ -41,7 +36,7 @@ def get_quotes(_ticker, _start, _end):
 # Таблица котировок yahoo указанной ценной бумаги за период
 # с возможностью выбора интервала
 # Формат: Date, Open, High, Low, Close, Adj Close, Volume
-def get_quotesY(_ticker, _start, _end, _timeframe):
+def get_quotesY(_ticker, _start, _end, _timeframe='15m'):
     try:
         data = yf.download(_ticker, _start, _end, interval=_timeframe)
     except Exception as err:
@@ -73,8 +68,8 @@ if __name__ == "__main__":
     timeframe = '5m'
 
     # Временные рамки для получения котировок
-    start = dt.datetime(2021, 5, 1)
-    end = dt.datetime.now()
+    start = dt.date(2021, 5, 1)
+    end = dt.date.today()
 
     # список списков [цена открытия, цена закрытия]
     get_quotes(ticker, start, end)
@@ -85,7 +80,7 @@ if __name__ == "__main__":
     # Таблица котировок yahoo указанной ценной бумаги за период
     # с возможностью выбора интервала
     # Формат: Date, Open, High, Low, Close, Adj Close, Volume
-    # Котировки AAPL, таймфрейм 10m
+    # Котировки AAPL, таймфрейм 15m
     try:
         dataY = yf.download('AAPL', start, end, interval="15m")
     except Exception as err:

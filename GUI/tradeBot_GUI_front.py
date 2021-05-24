@@ -32,23 +32,23 @@ class Ui_MainWindow(object):
         self.run_button.setFont(font)
         self.run_button.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.run_button.setStyleSheet("QPushButton {\n"
-"    border-radius: 10px;\n"
-"    background-color: qlineargradient(\n"
-"spread:pad, x1: 0, y1: 0, x2: 1, y2: 0, \n"
-"stop: 0  #e38676, stop:1 #d65c66);\n"
-"    }\n"
-"\n"
-"QPushButton:hover {\n"
-"    background-color: qlineargradient(\n"
-"spread:pad, x1: 0, y1: 0, x2: 1, y2: 0, \n"
-"stop: 0  #e39486, stop:1 #d66b74);\n"
-"    }\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(\n"
-"spread:pad, x1: 0, y1: 0, x2: 1, y2: 0, \n"
-"stop: 0  #e37966, stop:1 #d64d59);\n"
-"    }")
+                                      "    border-radius: 10px;\n"
+                                      "    background-color: qlineargradient(\n"
+                                      "spread:pad, x1: 0, y1: 0, x2: 1, y2: 0, \n"
+                                      "stop: 0  #e37966, stop:1 #d64d59);\n"
+                                      "}\n"
+                                      "\n"
+                                      "QPushButton:hover {\n"
+                                      "    background-color: qlineargradient(\n"
+                                      "spread:pad, x1: 0, y1: 0, x2: 1, y2: 0, \n"
+                                      "stop: 0  #e38676, stop:1 #d65c66);\n"
+                                      "}\n"
+                                      "\n"
+                                      "QPushButton:pressed {\n"
+                                      "    background-color: qlineargradient(\n"
+                                      "spread:pad, x1: 0, y1: 0, x2: 1, y2: 0, \n"
+                                      "stop: 0  #36D1DC, stop:1 #5B86E5);\n"
+                                      "}")
         self.run_button.setAutoDefault(False)
         self.run_button.setFlat(False)
         self.run_button.setObjectName("run_button")
@@ -60,10 +60,11 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.ticker_edit.setFont(font)
-        self.ticker_edit.setStyleSheet("background-color: qlineargradient(spread:pad, x1: 0, y1: 0, x2: 1, y2: 0, stop: 0  #5B86E5, stop:1 #36D1DC);\n"
-"border-radius: 10px;\n"
-"padding: 10px;")
-        self.ticker_edit.setInputMethodHints(QtCore.Qt.ImhLatinOnly|QtCore.Qt.ImhPreferUppercase)
+        self.ticker_edit.setStyleSheet(
+            "background-color: qlineargradient(spread:pad, x1: 0, y1: 0, x2: 1, y2: 0, stop: 0  #5B86E5, stop:1 #36D1DC);\n"
+            "border-radius: 10px;\n"
+            "padding: 10px;")
+        self.ticker_edit.setInputMethodHints(QtCore.Qt.ImhLatinOnly | QtCore.Qt.ImhPreferUppercase)
         self.ticker_edit.setFrame(False)
         self.ticker_edit.setObjectName("ticker_edit")
         self.dateEdit_from = QtWidgets.QDateEdit(self.centralwidget)
@@ -71,20 +72,17 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setFamily("Montserrat")
         font.setPointSize(24)
-        font.setBold(False)
-        font.setItalic(False)
-        font.setWeight(9)
         self.dateEdit_from.setFont(font)
         self.dateEdit_from.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.dateEdit_from.setFocusPolicy(QtCore.Qt.WheelFocus)
         self.dateEdit_from.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.dateEdit_from.setStyleSheet("background-color: rgba( 255, 255, 255,90%);\n"
-"border-radius: 10px;\n"
-"padding: 10px;")
+                                         "border-radius: 10px;\n"
+                                         "padding: 10px;")
         self.dateEdit_from.setFrame(False)
         self.dateEdit_from.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.dateEdit_from.setMaximumDate(QtCore.QDate(3000, 12, 31))
-        self.dateEdit_from.setMinimumDate(QtCore.QDate(2000, 9, 14))
+        self.dateEdit_from.setMinimumDate(QtCore.QDate(2000, 1, 1))
         self.dateEdit_from.setObjectName("dateEdit_from")
         self.dateEdit_to = QtWidgets.QDateEdit(self.centralwidget)
         self.dateEdit_to.setGeometry(QtCore.QRect(20, 220, 250, 80))
@@ -94,12 +92,12 @@ class Ui_MainWindow(object):
         self.dateEdit_to.setFont(font)
         self.dateEdit_to.setCursor(QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.dateEdit_to.setStyleSheet("background-color: rgba( 255, 255, 255,90%);\n"
-"border-radius: 10px;\n"
-"padding: 10px;")
+                                       "border-radius: 10px;\n"
+                                       "padding: 10px;")
         self.dateEdit_to.setFrame(False)
         self.dateEdit_to.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.dateEdit_to.setMaximumDate(QtCore.QDate(3000, 12, 31))
-        self.dateEdit_to.setMinimumDate(QtCore.QDate(2000, 9, 14))
+        self.dateEdit_to.setMinimumDate(QtCore.QDate(2000, 1, 1))
         self.dateEdit_to.setObjectName("dateEdit_to")
         self.comboBox_alg = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox_alg.setGeometry(QtCore.QRect(20, 320, 250, 80))
@@ -111,29 +109,24 @@ class Ui_MainWindow(object):
         self.comboBox_alg.setFont(font)
         self.comboBox_alg.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.comboBox_alg.setStyleSheet("QComboBox {\n"
-"    border-radius: 10px;\n"
-"    background-color: rgba( 255, 255, 255,90%);\n"
-"    padding: 10px;\n"
-"}\n"
-"\n"
-"QComboBox::drop-down \n"
-"{\n"
-"    border: none;\n"
-"    border-radius: 10px;\n"
-"    width: 40px;\n"
-"    height: 80px;\n"
-"    background-color: none;\n"
-"}\n"
-"\n"
-"QComboBox QAbstractItemView {\n"
-"  color: rgb(85, 170, 255);    \n"
-"  background-color: #373e4e;\n"
-"  padding: 10px;\n"
-"  selection-background-color: rgb(39, 44, 54);\n"
-"}")
-        self.comboBox_alg.setCurrentText("ALGORITHM")
-        self.comboBox_alg.setFrame(False)
+                                        "    border-radius: 10px;\n"
+                                        "    background-color: rgba( 255, 255, 255, 90%);\n"
+                                        "    padding: 10px;\n"
+                                        "}\n"
+                                        "\n"
+                                        "QComboBox::drop-down \n"
+                                        "{\n"
+                                        "    border: none;\n"
+                                        "    background-color: none;\n"
+                                        "}\n"
+                                        "\n"
+                                        "QComboBox QAbstractItemView {\n"
+                                        "    color: #000;\n"
+                                        "    background-color: #fff;\n"
+                                        "    selection-color: #5B86E5;\n"
+                                        "}")
         self.comboBox_alg.setObjectName("comboBox_alg")
+        self.comboBox_alg.addItem("")
         self.comboBox_alg.addItem("")
         self.comboBox_time = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox_time.setGeometry(QtCore.QRect(20, 420, 250, 80))
@@ -145,29 +138,24 @@ class Ui_MainWindow(object):
         self.comboBox_time.setFont(font)
         self.comboBox_time.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.comboBox_time.setStyleSheet("QComboBox {\n"
-"    border-radius: 10px;\n"
-"    background-color: rgba( 255, 255, 255,90%);\n"
-"    padding: 10px;\n"
-"}\n"
-"\n"
-"QComboBox::drop-down \n"
-"{\n"
-"    border: none;\n"
-"    border-radius: 10px;\n"
-"    width: 40px;\n"
-"    height: 80px;\n"
-"    background-color: none;\n"
-"}\n"
-"\n"
-"QComboBox QAbstractItemView {\n"
-"  color: rgb(85, 170, 255);    \n"
-"  background-color: #373e4e;\n"
-"  padding: 10px;\n"
-"  selection-background-color: rgb(39, 44, 54);\n"
-"}")
-        self.comboBox_time.setCurrentText("TIME FRAME")
-        self.comboBox_time.setFrame(False)
+                                         "    border-radius: 10px;\n"
+                                         "    background-color: rgba( 255, 255, 255, 90%);\n"
+                                         "    padding: 10px;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QComboBox::drop-down \n"
+                                         "{\n"
+                                         "    border: none;\n"
+                                         "    background-color: none;\n"
+                                         "}\n"
+                                         "\n"
+                                         "QComboBox::QAbstractItemView {\n"
+                                         "    color: #000;\n"
+                                         "    background-color: #fff;\n"
+                                         "    selection-color: #d65c66;\n"
+                                         "}")
         self.comboBox_time.setObjectName("comboBox_time")
+        self.comboBox_time.addItem("")
         self.comboBox_time.addItem("")
         self.status_field = QtWidgets.QTextBrowser(self.centralwidget)
         self.status_field.setGeometry(QtCore.QRect(310, 540, 650, 80))
@@ -180,10 +168,9 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.status_field.setFont(font)
         self.status_field.setStyleSheet("color: rgb(255, 255, 255);\n"
-"border: 1px solid white;\n"
-"border-radius: 5px;\n"
-"padding: 10px;")
-        self.status_field.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
+                                        "border: 1px solid white;\n"
+                                        "border-radius: 5px;\n"
+                                        "padding: 10px;")
         self.status_field.setObjectName("status_field")
         self.graphic_field = QtWidgets.QWidget(self.centralwidget)
         self.graphic_field.setGeometry(QtCore.QRect(310, 20, 650, 480))
@@ -194,8 +181,8 @@ class Ui_MainWindow(object):
         self.graphic_field.setFont(font)
         self.graphic_field.setCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
         self.graphic_field.setStyleSheet("background-color: #2e2f33;\n"
-"border: 1px solid white;\n"
-"border-radius: 5px;")
+                                         "border: 1px solid white;\n"
+                                         "border-radius: 5px;")
         self.graphic_field.setObjectName("graphic_field")
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -204,14 +191,15 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Trade Bot"))
-        self.run_button.setText(_translate("MainWindow", "RUN"))
-        self.comboBox_alg.setItemText(0, _translate("MainWindow", "ALGORITHM"))
-        self.comboBox_time.setItemText(0, _translate("MainWindow", "TIME FRAME"))
+        self.comboBox_alg.setItemText(0, _translate("MainWindow", "New Item"))
+        self.comboBox_alg.setItemText(1, _translate("MainWindow", "New Item"))
+        self.comboBox_time.setItemText(0, _translate("MainWindow", "New Item"))
+        self.comboBox_time.setItemText(1, _translate("MainWindow", "New Item"))
 
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
