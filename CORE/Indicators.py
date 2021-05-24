@@ -1,7 +1,7 @@
 import math
 import pandas_datareader as web
 import datetime as dt
-import json
+
 
 
 # usually close data
@@ -51,7 +51,7 @@ def EMA(data, period):
 
 # Moving average convergence/divergence
 # https://en.wikipedia.org/wiki/MACD
-# usuall take 12,26,9, but u can take 5,35,5 for more risky trading
+# usually take 12,26,9, but u can take 5,35,5 for more risky trading
 def MACD(data, shortperiod, longperiod, signalperiod):
     macd, macdsignal, macdhist = [], [], []
 
@@ -69,7 +69,7 @@ def MACD(data, shortperiod, longperiod, signalperiod):
             diff.append(macd[k])
 
     diff_ema = EMA(diff, signalperiod)
-    macdsignal = macdsignal + diff_ema
+    macdsignal += diff_ema
 
     for k, ms in enumerate(macdsignal):
         if math.isnan(ms) or math.isnan(macd[k]):
@@ -113,3 +113,40 @@ def RSI(data, period):
             result.append(100 - (100 / (1 + ema_u[k] / ema_d[k])))
 
     return result
+
+
+#Double Exponential Moving Average
+#https://en.wikipedia.org/wiki/Exponential_smoothing#Double_exponential_smoothing
+def DEMA(data, period):
+    ema = EMA(data, period)
+    ema_slice = ema[(period - 1):]
+    ema2 = EMA(ema_slice, period)
+    ema2 = [math.nan] * (period - 1) + ema2
+    e2 = list(map(lambda x: x * 2, ema))
+
+    result = []
+
+    for i in range(len(data)):
+        result.append(e2[i] - ema2[i])
+    return result
+
+
+#Triple Exponential Moving Average
+def TEMA(data, period):
+    e1 = EMA(data, period)
+    e1_slice = e1[(period - 1):]
+    e2 = EMA(e1_slice, period)
+    e2_slice = e2[(period - 1):]
+    e3 = EMA(e2_slice, period)
+    e2 = [math.nan] * (period - 1) + e2
+    e3 = [math.nan] * 2 * (period - 1) + e3
+
+    e1 = list(map(lambda x: x * 3, e1))
+    e2 = list(map(lambda x: x * 3, e2))
+
+    result = []
+    for i in range(len(data)):
+        result.append(e1[i] - e2[i] + e3[i])
+
+    return result
+

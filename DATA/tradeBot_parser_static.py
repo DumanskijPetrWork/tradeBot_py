@@ -84,6 +84,3 @@ if __name__ == "__main__":
 
     # Список списков [цена открытия, цена закрытия]
     print(get_quotes_json(ticker, start, end))
-
-    data = json.loads(get_quotes_json(ticker, start, end))
-    print(data)
