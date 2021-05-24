@@ -120,14 +120,13 @@ class Ui_MainWindow(object):
                                         "    background-color: none;\n"
                                         "}\n"
                                         "\n"
-                                        "QComboBox QAbstractItemView {\n"
+                                        "QComboBox QAbstractItemView \n"
+                                        "{\n"
                                         "    color: #000;\n"
                                         "    background-color: #fff;\n"
                                         "    selection-color: #5B86E5;\n"
                                         "}")
         self.comboBox_alg.setObjectName("comboBox_alg")
-        self.comboBox_alg.addItem("")
-        self.comboBox_alg.addItem("")
         self.comboBox_time = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox_time.setGeometry(QtCore.QRect(20, 420, 250, 80))
         font = QtGui.QFont()
@@ -149,14 +148,12 @@ class Ui_MainWindow(object):
                                          "    background-color: none;\n"
                                          "}\n"
                                          "\n"
-                                         "QComboBox::QAbstractItemView {\n"
+                                         "QComboBox QAbstractItemView {\n"
                                          "    color: #000;\n"
                                          "    background-color: #fff;\n"
                                          "    selection-color: #d65c66;\n"
                                          "}")
         self.comboBox_time.setObjectName("comboBox_time")
-        self.comboBox_time.addItem("")
-        self.comboBox_time.addItem("")
         self.status_field = QtWidgets.QTextBrowser(self.centralwidget)
         self.status_field.setGeometry(QtCore.QRect(310, 540, 650, 80))
         self.status_field.setMinimumSize(QtCore.QSize(250, 80))
@@ -190,11 +187,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        self.comboBox_alg.setItemText(0, _translate("MainWindow", "New Item"))
-        self.comboBox_alg.setItemText(1, _translate("MainWindow", "New Item"))
-        self.comboBox_time.setItemText(0, _translate("MainWindow", "New Item"))
-        self.comboBox_time.setItemText(1, _translate("MainWindow", "New Item"))
+        pass
 
 
 if __name__ == "__main__":

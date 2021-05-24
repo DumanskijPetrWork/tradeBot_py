@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
-import Indicators  # внутренний модуль
-import Data        # внутренний модуль
+import Indicators
+from DATA.tradeBot_parser_static import get_quotes_tab
 import datetime as dt
 
 
 def plot_SMA(ticker, start, end, window):
-    data = Data.getAllQuotes(ticker, start, end)
+    data = get_quotes_tab(ticker, start, end)
     data = data['Close']
     sma = Indicators.SMA(data, window)
     plt.plot(data)
@@ -14,7 +14,7 @@ def plot_SMA(ticker, start, end, window):
 
 
 def plot_twoSMA(ticker, start, end):
-    data = Data.getAllQuotes(ticker, start, end)
+    data = get_quotes_tab(ticker, start, end)
     data = data['Close']
     smaShort = Indicators.SMA(data, 70)
     smaLong = Indicators.SMA(data, 140)
@@ -25,7 +25,7 @@ def plot_twoSMA(ticker, start, end):
 
 
 def plot_EMA(ticker, start, end, window):
-    data = Data.getAllQuotes(ticker, start, end)
+    data = get_quotes_tab(ticker, start, end)
     data = data['Close']
     ema = Indicators.SMA(data, window)
     plt.plot(data)
@@ -37,7 +37,7 @@ plot_EMA('SBER.ME', dt.datetime(2019, 1, 1), dt.datetime(2021, 5, 1), 100)
 
 
 def plot_MACD(ticker, start, end, shortwindow, longwindow, signalwindow):
-    data = Data.getAllQuotes(ticker, start, end)
+    data = get_quotes_tab(ticker, start, end)
     macd = Indicators.MACD(data['Close'], shortwindow, longwindow, signalwindow)
 
     plt.bar(data['Date'], macd[0])

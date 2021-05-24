@@ -1,21 +1,30 @@
-# Статический парсер котировок
+# Статический парсер котировок pandas_datareader
 
 import pandas_datareader as web
 import datetime as dt
-import yfinance as yf
 import json
 
 
-# Таблица котировок указанной ценной бумаги за период, таймфрейм 1d
-# Формат: Date, Adj Close, Close, High, Low, Open, Volume
+# Получить индексированную таблицу котировок тикера за указанный период
+# Формат: Index, Date, High, Low, Open, Close, Volume, Adj Close
+def get_quotes_tab(_ticker, _start, _end):
+    try:
+        data = web.DataReader(_ticker, "yahoo", _start, _end)
+    except Exception as err:
+        print(f'При получении котировок возникла ошибка: {err}')
+    else:
+        return data.reset_index()  # Индексация
+    return None
+
+
 # Получить список котировок тикера за указанный период
-def get_quotes(_ticker, _start, _end):
+def get_quotes_list(_ticker, _start, _end):
     try:
         data = web.DataReader([_ticker], "yahoo", _start, _end)
     except Exception as err:
-        print(f'При получении списка котировок возникла ошибка: {err}')
+        print(f'При получении котировок возникла ошибка: {err}')
     else:
-        quotes = []
+        quotes = []  # Список котировок
         # Фильтр нужных категорий
         data_lite = data.drop(['Adj Close', 'High', 'Low', 'Volume'], 1)
         # Котировки открытия
@@ -25,38 +34,34 @@ def get_quotes(_ticker, _start, _end):
 
         # Добавление котировок в список quotes
         for price in range(len(open_data)):
-            quotes.append((open_data[price], close_data[price]))
-            # quotes.append(open_data[price])
-            # quotes.append(close_data[price])
+            quotes.append(open_data[price])
+            quotes.append(close_data[price])
 
-        return json.dumps(quotes, indent=2)  # json формат
+        return quotes
     return None
 
 
-# Таблица котировок yahoo указанной ценной бумаги за период
-# с возможностью выбора интервала
-# Формат: Date, Open, High, Low, Close, Adj Close, Volume
-def get_quotesY(_ticker, _start, _end, _timeframe='15m'):
+# Получить список списков котировок тикера за указанный период в формате json
+# Формат: [цена открытия, цена закрытия]
+def get_quotes_json(_ticker, _start, _end):
     try:
-        data = yf.download(_ticker, _start, _end, interval=_timeframe)
+        data = web.DataReader([_ticker], "yahoo", _start, _end)
     except Exception as err:
-        print(f'При получении списка котировок возникла ошибка: {err}')
+        print(f'При получении котировок возникла ошибка: {err}')
     else:
-        quotesY = []
+        quotes = []  # Список котировок
         # Фильтр нужных категорий
         data_lite = data.drop(['Adj Close', 'High', 'Low', 'Volume'], 1)
         # Котировки открытия
-        open_data = data_lite['Open'].values
+        open_data = data_lite[('Open', _ticker)].values
         # Котировки закрытия
-        close_data = data_lite['Close'].values
+        close_data = data_lite[('Close', _ticker)].values
 
         # Добавление котировок в список quotes
         for price in range(len(open_data)):
-            quotesY.append((open_data[price], close_data[price]))
-            # quotes.append(open_data[price])
-            # quotes.append(close_data[price])
+            quotes.append([open_data[price], close_data[price]])
 
-        return json.dumps(quotesY, indent=2)  # json формат
+        return json.dumps(quotes, indent=2)  # json формат
     return None
 
 
@@ -68,22 +73,17 @@ if __name__ == "__main__":
     timeframe = '5m'
 
     # Временные рамки для получения котировок
-    start = dt.date(2021, 5, 1)
+    start = dt.date.today() - dt.timedelta(days=30)
     end = dt.date.today()
 
-    # список списков [цена открытия, цена закрытия]
-    get_quotes(ticker, start, end)
+    # Таблица котировок
+    print(get_quotes_tab(ticker, start, end))
 
-    # список списков [цена открытия, цена закрытия]
-    get_quotesY(ticker, start, end, timeframe)
+    # Список котировок
+    print(get_quotes_list(ticker, start, end))
 
-    # Таблица котировок yahoo указанной ценной бумаги за период
-    # с возможностью выбора интервала
-    # Формат: Date, Open, High, Low, Close, Adj Close, Volume
-    # Котировки AAPL, таймфрейм 15m
-    try:
-        dataY = yf.download('AAPL', start, end, interval="15m")
-    except Exception as err:
-        print(f'При получении списка котировок возникла ошибка: {err}')
-    else:
-        print(dataY)
+    # Список списков [цена открытия, цена закрытия]
+    print(get_quotes_json(ticker, start, end))
+
+    data = json.loads(get_quotes_json(ticker, start, end))
+    print(data)

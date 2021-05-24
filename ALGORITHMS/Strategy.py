@@ -1,15 +1,14 @@
 import math
-import json
 
-import Data        # внутренний модуль
-import Indicators  # внутренний модуль
+from DATA.tradeBot_parser_static import get_quotes_list
+import Indicators
 
 
 # window from 200 for better result
 # dt.datetime(2020, 5, 1)
 def Strategy_SMA(ticker, start, end, capital, window):
     global lastI
-    data = json.loads(Data.get_quotes(ticker, start, end))
+    data = get_quotes_list(ticker, start, end)
     lengthOfData = len(data)
 
     startUpCapital = capital
@@ -38,7 +37,7 @@ def Strategy_SMA(ticker, start, end, capital, window):
 
 
 def Strategy_byeAndHold(ticker, start, end, capital):
-    data = json.loads(Data.get_quotes(ticker, start, end))
+    data = get_quotes_list(ticker, start, end)
     lengthOfData = len(data)
 
     startUpCapital = capital
@@ -56,7 +55,7 @@ def Strategy_byeAndHold(ticker, start, end, capital):
 
 def Strategy_twoSMA(ticker, start, end, capital):
     global lastI
-    data = json.loads(Data.get_quotes(ticker, start, end))
+    data = get_quotes_list(ticker, start, end)
     lengthOfData = len(data)
 
     startUpCapital = capital
@@ -90,7 +89,7 @@ def Strategy_twoSMA(ticker, start, end, capital):
 
 
 def Strategy_EMA(ticker, start, end, capital):
-    data = json.loads(Data.get_quotes(ticker, start, end))
+    data = get_quotes_list(ticker, start, end)
     lengthOfData = len(data)
 
     startUpCapital = capital
