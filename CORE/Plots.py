@@ -46,6 +46,44 @@ def plot_MACD(ticker, start, end, shortwindow, longwindow, signalwindow):
 
     plt.show()
 
+def plot_RSI(ticker, start, end, window):
+    data = Data.getAllQuotes(ticker, start, end)
+    data = data['Close']
+
+    rsi = Indicators.RSI(data, window)
+
+    plt.plot(rsi)
+    plt.plot([30]*len(data))
+    plt.plot([70]*len(data))
+
+    plt.show()
+
+def plot_DEMA(ticker, start, end, window):
+    data = Data.getAllQuotes(ticker, start, end)
+    data = data['Close']
+
+    dema = Indicators.DEMA(data, window)
+
+    plt.plot(data)
+    plt.plot(dema)
+
+    plt.show()
+
+def plot_TEMA(ticker, start, end, window):
+    data = Data.getAllQuotes(ticker, start, end)
+    data = data['Close']
+
+    tema = Indicators.TEMA(data, window)
+
+    plt.plot(data)
+    plt.plot(tema)
+
+    plt.show()
+
+
+
+
+
 
 def plot_RSI(ticker, start, end, window):
     data = get_quotes_tab(ticker, start, end)
