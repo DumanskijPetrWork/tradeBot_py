@@ -41,3 +41,4 @@ if __name__ == '__main__':
         plt.pause(0.5)  # Интервал отрисовки
 
     plt.show()
+    # plt.imshow()

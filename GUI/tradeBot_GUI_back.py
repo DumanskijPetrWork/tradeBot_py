@@ -1,6 +1,7 @@
 import string
 import sys
 from PyQt5 import QtWidgets
+
 from tradeBot_GUI_front import Ui_MainWindow
 from DATA.tradeBot_parser_static import *
 # from CORE import *  # Будущий импорт для графиков и matplotlib / plotly
@@ -27,8 +28,9 @@ class BackEnd(QtWidgets.QMainWindow):
         # Заголовок окна
         self.setWindowTitle("Trade Bot")
 
-        # Текст кнопки
-        self._front_end.run_button.setText("RUN")
+        # Текст кнопок
+        self._front_end.run_button.setText("RUN")  # RUN
+        self._front_end.info_button.setText("INFO")  # INFO
 
         # Текст поля ввода тикера
         self._front_end.ticker_edit.setPlaceholderText("TICKER")
@@ -58,8 +60,10 @@ class BackEnd(QtWidgets.QMainWindow):
         self._front_end.status_field.setText('Select:  Ticker, Start date, End date, Algorithm, Time frame;\n'
                                              'Press "RUN".')
 
-        # Обработка нажатия на кнопку
-        self._front_end.run_button.clicked.connect(self.build_data)
+        # Обработка нажатий на кнопки
+        self._front_end.run_button.clicked.connect(self.build_data)  # RUN
+        self._front_end.info_button.clicked.connect(self.show_info)  # INFO
+
 
     # Функция получения данных при нажатии кнопки
     def build_data(self):
@@ -92,7 +96,7 @@ class BackEnd(QtWidgets.QMainWindow):
                     self.date_from_prev != self._front_end.dateEdit_from.text() or
                     self.date_to_prev != self._front_end.dateEdit_to.text() or
                     self.time_frame != time_frame):
-                self.data = get_quotes_list(ticker, start_date, end_date)  # Получение котировок
+                # self.data = get_quotes_list(ticker, start_date, end_date)  # Получение котировок
 
                 self.ticker_prev = ticker
                 self.date_from_prev = self._front_end.dateEdit_from.text()
@@ -106,8 +110,15 @@ class BackEnd(QtWidgets.QMainWindow):
             self._front_end.status_field.setText("Data's been received.")
             self.graphic_show()
 
+    # Функция построения графика
     def graphic_show(self):
         print(self.data)
+
+        # self._front_end.status_field.setText("Plot's been built.")
+
+    # Показать информацию об алгоритме
+    def show_info(self):
+        pass
 
 
 if __name__ == '__main__':
@@ -117,4 +128,6 @@ if __name__ == '__main__':
     application.show()
     sys.exit(app.exec_())
 
-# убираем все упоминания retranslateUi в файле tradeBot_GUI_front
+# убираем все упоминания retranslateUi в файле tradeBot_GUI_front, переносим import MplCanvas новерх
+# QMessageBox - information / warning
+# QDialog (Box)
