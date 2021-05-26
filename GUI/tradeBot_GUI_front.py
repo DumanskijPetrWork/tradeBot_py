@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
 
@@ -17,9 +16,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setContentsMargins(20, 20, 20, 20)
         self.horizontalLayout.setSpacing(40)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.panel_plus_spacer = QtWidgets.QVBoxLayout()
-        self.panel_plus_spacer.setSpacing(0)
-        self.panel_plus_spacer.setObjectName("panel_plus_spacer")
+        self.panel_and_spacer = QtWidgets.QVBoxLayout()
+        self.panel_and_spacer.setSpacing(0)
+        self.panel_and_spacer.setObjectName("panel_and_spacer")
         self.panel = QtWidgets.QSplitter(self.centralwidget)
         self.panel.setOrientation(QtCore.Qt.Vertical)
         self.panel.setHandleWidth(40)
@@ -240,20 +239,23 @@ class Ui_MainWindow(object):
         self.run_button.setAutoDefault(False)
         self.run_button.setFlat(False)
         self.run_button.setObjectName("run_button")
-        self.panel_plus_spacer.addWidget(self.panel)
+        self.panel_and_spacer.addWidget(self.panel)
         spacerItem = QtWidgets.QSpacerItem(0, 0, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.panel_plus_spacer.addItem(spacerItem)
-        self.horizontalLayout.addLayout(self.panel_plus_spacer)
+        self.panel_and_spacer.addItem(spacerItem)
+        self.horizontalLayout.addLayout(self.panel_and_spacer)
         self.right_part = QtWidgets.QVBoxLayout()
         self.right_part.setSpacing(40)
         self.right_part.setObjectName("right_part")
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setObjectName("verticalLayout")
+        self.verticalLayout.setObjectName("graphic_layout")
         self.graphic_field = MplCanvas(self.centralwidget)
         self.graphic_field.setMinimumSize(QtCore.QSize(400, 400))
         self.graphic_field.setCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
         self.graphic_field.setObjectName("graphic_field")
+
+        # self.graphic_field.axes.plot([0, 1, 2, 3, 4], [10, 1, 20, 3, 40])
+
         self.verticalLayout.addWidget(self.graphic_field)
 
         # Панель инструментов (не нажимать на сохранение в виде файла, вылетает.)

@@ -1,10 +1,11 @@
 import string
 import sys
 from PyQt5 import QtWidgets
-
 from tradeBot_GUI_front import Ui_MainWindow
 from DATA.tradeBot_parser_static import *
-# from CORE import *  # Будущий импорт для графиков и matplotlib / plotly
+from CORE import *  # Будущий импорт для графиков и matplotlib / plotly
+from PyQt5 import QtCore
+import random
 
 
 class BackEnd(QtWidgets.QMainWindow):
@@ -62,8 +63,7 @@ class BackEnd(QtWidgets.QMainWindow):
 
         # Обработка нажатий на кнопки
         self._front_end.run_button.clicked.connect(self.build_data)  # RUN
-        self._front_end.info_button.clicked.connect(self.show_info)  # INFO
-
+        self._front_end.info_button.clicked.connect(self.graphic_dynamic_show)  # INFO
 
     # Функция получения данных при нажатии кнопки
     def build_data(self):
@@ -112,13 +112,46 @@ class BackEnd(QtWidgets.QMainWindow):
 
     # Функция построения графика
     def graphic_show(self):
-        print(self.data)
+        print(f'{self.data}\n')
+        x_list = range(len(self.data))
 
-        # self._front_end.status_field.setText("Plot's been built.")
+        try:
+            self._front_end.graphic_field.axes.cla()
+            self._front_end.graphic_field.axes.plot(x_list, self.data, 'r')
+            self._front_end.graphic_field.draw()
+        except Exception as err:
+            print(f'{err}\n')
+            self._front_end.status_field.setText(f'<span style=\"color:#ff0000;\">WARNING:</span> {err}')
+        else:
+            print("Plot's been built.\n")
+            self._front_end.status_field.setText("Plot's been built.")
+
+    # Тестовая функция
+    def graphic_dynamic_show(self):
+        n_data = 50
+        self.xdata = list(range(n_data))
+        self.ydata = [random.randint(0, 10) for _ in range(n_data)]
+        self.update_plot()
+
+        self.timer = QtCore.QTimer()
+        self.timer.setInterval(80)
+        self.timer.timeout.connect(self.update_plot)
+        self.timer.start()
+
+    # Тестовая вспомогательная функция
+    def update_plot(self):
+        # Drop off the first y element, append a new one.
+        self.ydata = self.ydata[1:] + [random.randint(0, 10)]
+        self._front_end.graphic_field.axes.cla()  # Clear the canvas.
+        self._front_end.graphic_field.axes.plot(self.xdata, self.ydata, 'r')
+        # Trigger the canvas to update and redraw.
+        self._front_end.graphic_field.draw()
 
     # Показать информацию об алгоритме
     def show_info(self):
-        pass
+        print("Dialog window's been opened.\n")
+        QtWidgets.QMessageBox.about(self, "INFO", "Info will be there soon:")
+        # text, ok = QtWidgets.QInputDialog.getText(self, 'INFO', 'Info will be there soon:')
 
 
 if __name__ == '__main__':
@@ -128,6 +161,17 @@ if __name__ == '__main__':
     application.show()
     sys.exit(app.exec_())
 
-# убираем все упоминания retranslateUi в файле tradeBot_GUI_front, переносим import MplCanvas новерх
+# Убираем все упоминания retranslateUi в файле tradeBot_GUI_front, переносим import MplCanvas новерх
 # QMessageBox - information / warning
 # QDialog (Box)
+
+# Добавлять в файл tradeBot_GUI_front:
+# from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+#
+#         Панель инструментов (не нажимать на сохранение в виде файла, вылетает.)
+#         self.tools_field = NavigationToolbar2QT(self.graphic_field, self.centralwidget)
+#         self.tools_field.setMaximumSize(QtCore.QSize(16777215, 35))  # Размер панели
+#         self.tools_field.setObjectName("tools_field")
+#         self.verticalLayout.addWidget(self.tools_field)  # Отобразить панель в группе виджетов
+
+# Toolbar можно переписать
