@@ -150,3 +150,23 @@ def TEMA(data, period):
 
     return result
 
+
+def Bulls_power(data, period):
+    result = data['High'] - EMA(data['Close'], period)
+    return result
+
+def Bears_power(data,period):
+    result = data['Low'] - EMA(data['Close'], period)
+    return result
+
+def Elder_Rays(data,period):
+    ema = EMA(data, period)
+    bulls = Bulls_power(data, period)
+    bears = Bears_power(data, period)
+    return ema, bulls, bears
+
+
+#https://ru.wikipedia.org/wiki/Индекс_массы_(технический_анализ)
+def MI(data,period):
+    result = EMA(data['High']-data['Low'],period)/DEMA(data['High']-data['Low'],period)
+
