@@ -13,32 +13,44 @@ def get_dynamic_quotes(_quotes):
 
 
 if __name__ == '__main__':
-    # Инициализация
+    # # Инициализация
+    # data = get_quotes_list('AAPL',
+    #                        dt.date.today() - dt.timedelta(days=30),
+    #                        dt.date.today())
+    # quotes_generator = get_dynamic_quotes(data)  # Генератор котировок
+    #
+    # # Значения по осям
+    # x_values = []
+    # y_values = []
+    #
+    # # Динамическое обновление
+    # for i in range(len(data)):
+    #     # Добавление последней точки графика
+    #     try:
+    #         y_values.append(next(quotes_generator))
+    #         x_values.append(i)
+    #     except StopIteration:
+    #         break
+    #
+    #     # Стиль графика
+    #     plt.style.use('fivethirtyeight')
+    #     plt.tight_layout()
+    #
+    #     plt.cla()  # Очистка графика
+    #     plt.plot(x_values, y_values, color='black')  # Обновление графика
+    #     plt.pause(0.5)  # Интервал отрисовки
+    #
+    # plt.show()
+    # # plt.imshow()
+
     data = get_quotes_list('AAPL',
                            dt.date.today() - dt.timedelta(days=30),
                            dt.date.today())
-    quotes_generator = get_dynamic_quotes(data)  # Генератор котировок
+    xdata = range(50)
+    ydata = data[::50]
+    quotes_generator = get_dynamic_quotes(data)
 
-    # Значения по осям
-    x_values = []
-    y_values = []
-
-    # Динамическое обновление
-    for i in range(len(data)):
-        # Добавление последней точки графика
-        try:
-            y_values.append(next(quotes_generator))
-            x_values.append(i)
-        except StopIteration:
-            break
-
-        # Стиль графика
-        plt.style.use('fivethirtyeight')
-        plt.tight_layout()
-
-        plt.cla()  # Очистка графика
-        plt.plot(x_values, y_values, color='black')  # Обновление графика
-        plt.pause(0.5)  # Интервал отрисовки
-
-    plt.show()
-    # plt.imshow()
+    print(data)
+    print(xdata)
+    print(ydata)
+    print(next(quotes_generator))

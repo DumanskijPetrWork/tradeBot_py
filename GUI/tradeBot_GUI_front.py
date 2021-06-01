@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from tradeBot_widget import MplCanvas
 from PyQt5 import QtCore, QtGui, QtWidgets
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
@@ -110,20 +111,13 @@ class Ui_MainWindow(object):
         self.comboBox_alg.setStyleSheet("QComboBox {\n"
                                         "    border-radius: 10px;\n"
                                         "    background-color: rgba( 255, 255, 255, 90%);\n"
-                                        "    padding: 10px;\n"
+                                        "    selection-color: #5B86E5;\n"
                                         "}\n"
                                         "\n"
                                         "QComboBox::drop-down \n"
                                         "{\n"
                                         "    border: none;\n"
                                         "    background-color: none;\n"
-                                        "}\n"
-                                        "\n"
-                                        "QComboBox QAbstractItemView \n"
-                                        "{\n"
-                                        "    color: #000;\n"
-                                        "    background-color: #fff;\n"
-                                        "    selection-color: #5B86E5;\n"
                                         "}")
         self.comboBox_alg.setObjectName("comboBox_alg")
         self.comboBox_time = QtWidgets.QComboBox(self.panel_input)
@@ -144,19 +138,13 @@ class Ui_MainWindow(object):
         self.comboBox_time.setStyleSheet("QComboBox {\n"
                                          "    border-radius: 10px;\n"
                                          "    background-color: rgba( 255, 255, 255, 90%);\n"
-                                         "    padding: 10px;\n"
+                                         "    selection-color: #d65c66;\n"
                                          "}\n"
                                          "\n"
                                          "QComboBox::drop-down \n"
                                          "{\n"
                                          "    border: none;\n"
                                          "    background-color: none;\n"
-                                         "}\n"
-                                         "\n"
-                                         "QComboBox QAbstractItemView {\n"
-                                         "    color: #000;\n"
-                                         "    background-color: #fff;\n"
-                                         "    selection-color: #d65c66;\n"
                                          "}")
         self.comboBox_time.setObjectName("comboBox_time")
         self.buttons = QtWidgets.QSplitter(self.panel)
@@ -254,15 +242,13 @@ class Ui_MainWindow(object):
         self.graphic_field.setCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
         self.graphic_field.setObjectName("graphic_field")
 
-        # self.graphic_field.axes.plot([0, 1, 2, 3, 4], [10, 1, 20, 3, 40])
-
         self.verticalLayout.addWidget(self.graphic_field)
 
-        # Панель инструментов (не нажимать на сохранение в виде файла, вылетает.)
-        self.tools_field = NavigationToolbar2QT(self.graphic_field, self.centralwidget)
-        self.tools_field.setMaximumSize(QtCore.QSize(16777215, 35))  # Размер панели
-        self.tools_field.setObjectName("tools_field")
-        self.verticalLayout.addWidget(self.tools_field)  # Отобразить панель в группе виджетов
+        # # Панель инструментов (не нажимать на сохранение в виде файла, вылетает.)
+        # self.tools_field = NavigationToolbar2QT(self.graphic_field, self.centralwidget)
+        # self.tools_field.setMaximumSize(QtCore.QSize(16777215, 35))  # Размер панели
+        # self.tools_field.setObjectName("tools_field")
+        # self.verticalLayout.addWidget(self.tools_field)  # Отобразить панель в группе виджетов
 
         self.right_part.addLayout(self.verticalLayout)
         self.status_field = QtWidgets.QTextBrowser(self.centralwidget)
@@ -289,8 +275,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         pass
 
-
-from tradeBot_widget import MplCanvas
 
 if __name__ == "__main__":
     import sys

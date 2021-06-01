@@ -1,11 +1,14 @@
 import string
 import sys
 from PyQt5 import QtWidgets
-from tradeBot_GUI_front import Ui_MainWindow
-from DATA.tradeBot_parser_static import *
-from CORE import *  # Будущий импорт для графиков и matplotlib / plotly
 from PyQt5 import QtCore
-import random
+from PyQt5.QtGui import QStandardItem, QColor
+from tradeBot_GUI_front import Ui_MainWindow
+from tradeBot_widget import CustomDialog
+# from tester import plot_SMA
+from DATA.tradeBot_parser_static import *
+from DATA.tradeBot_parser_static_yf import *
+from DATA.tradeBot_parser_dynamic import get_dynamic_quotes
 
 
 class BackEnd(QtWidgets.QMainWindow):
@@ -16,9 +19,10 @@ class BackEnd(QtWidgets.QMainWindow):
         self.ticker_prev = ''
         self.date_from_prev = dt.date.today() - dt.timedelta(days=30)
         self.date_to_prev = dt.date.today()
-        self.time_frame = 'TIME FRAME'
+        self.time_frame = '1d'
 
         self.data = []  # Данные котировок
+        self.timer = QtCore.QTimer()  # Таймер для динамики
 
         self._front_end = Ui_MainWindow()
         self._front_end.setupUi(self)
@@ -46,24 +50,88 @@ class BackEnd(QtWidgets.QMainWindow):
 
         # Инициализация списка алгоритмов
         self._front_end.comboBox_alg.setCurrentText("ALGORITHM")
-        for _ in ["ALGORITHM", ""]:
-            self._front_end.comboBox_alg.addItem(_)
+        self.model_comboBox_alg = self._front_end.comboBox_alg.model()
+        for name in ["ALGORITHM",
+                     "DYNAMIC",
+                     "TEST"]:
+            item = QStandardItem(name)
+            item.setBackground(QColor('white'))
+            self.model_comboBox_alg.appendRow(item)
 
         # Инициализцаия списков таймфреймов
         self._front_end.comboBox_time.setCurrentText("TIME FRAME")
-        for _ in ["TIME FRAME",
-                  "1m", "2m", "5m",
-                  "15m", "30m", "1h",
-                  "1d", "1wk", "1mo"]:
-            self._front_end.comboBox_time.addItem(_)
+        self.model_comboBox_time = self._front_end.comboBox_time.model()
+        for name in ["TIME FRAME",
+                     "1m", "2m", "5m",
+                     "15m", "30m", "1h",
+                     "1d", "1wk", "1mo"]:
+            item = QStandardItem(name)
+            item.setBackground(QColor('white'))
+            self.model_comboBox_time.appendRow(item)
 
         # Инициализация строки состояний
         self._front_end.status_field.setText('Select:  Ticker, Start date, End date, Algorithm, Time frame;\n'
                                              'Press "RUN".')
 
         # Обработка нажатий на кнопки
-        self._front_end.run_button.clicked.connect(self.build_data)  # RUN
-        self._front_end.info_button.clicked.connect(self.graphic_dynamic_show)  # INFO
+        self._front_end.run_button.clicked.connect(self.button_pressed)  # RUN
+        self._front_end.info_button.clicked.connect(self.show_info)  # INFO
+
+    # Функция назначения действия
+    def button_pressed(self):
+        time_frame = self._front_end.comboBox_time.currentText()
+        if time_frame == 'TIME FRAME':
+            self.build_data()
+        else:
+            self.build_data_y()
+
+    # Функция получения yahoo-данных при нажатии кнопки
+    def build_data_y(self):
+        print("Button's been pressed.\n")
+        ticker = self._front_end.ticker_edit.text().upper().strip(' ' + string.punctuation)
+
+        # Форматирование дат
+        start_date_raw = dt.datetime.strftime(dt.datetime.strptime(
+            self._front_end.dateEdit_from.text(), '%d.%m.%Y'),
+            '%Y-%m-%d')
+        end_date_raw = dt.datetime.strftime(dt.datetime.strptime(
+            self._front_end.dateEdit_to.text(), '%d.%m.%Y'),
+            '%Y-%m-%d')
+
+        # Автокоррекция дат
+        start_date = min(start_date_raw, end_date_raw)
+        end_date = max(start_date_raw, end_date_raw)
+
+        algorithm = self._front_end.comboBox_alg.currentText()
+        time_frame = self._front_end.comboBox_time.currentText()
+
+        print(f"ticker: {ticker}\n"
+              f"start_date: {start_date}\n"
+              f"end_date: {end_date}\n"
+              f"algorithm: {algorithm}\n"
+              f"time_frame: {time_frame}\n")
+
+        if ticker != '':
+            try:
+                if (self.ticker_prev != ticker or
+                        self.date_from_prev != self._front_end.dateEdit_from.text() or
+                        self.date_to_prev != self._front_end.dateEdit_to.text() or
+                        self.time_frame != time_frame):
+                    self.ticker_prev = ticker
+                    self.date_from_prev = self._front_end.dateEdit_from.text()
+                    self.date_to_prev = self._front_end.dateEdit_to.text()
+                    self.time_frame = time_frame
+                    self.data = get_quotesY_tab(ticker, start_date, end_date, time_frame)  # Получение котировок
+            except Exception as err:
+                print(f'{err}\n')
+                self._front_end.status_field.setText(f'<span style=\"color:#ff0000;\">WARNING:</span> {err}')
+            else:
+                print("Data's been received.\n")
+                self._front_end.status_field.setText("Data's been received.")
+                self.graphic_show(ticker, start_date, end_date)
+        else:
+            print('No ticker\n')
+            self._front_end.status_field.setText("<span style=\"color:#ff0000;\">WARNING:</span> specify the ticker")
 
     # Функция получения данных при нажатии кнопки
     def build_data(self):
@@ -91,67 +159,146 @@ class BackEnd(QtWidgets.QMainWindow):
               f"algorithm: {algorithm}\n"
               f"time_frame: {time_frame}\n")
 
-        try:
-            if (self.ticker_prev != ticker or
-                    self.date_from_prev != self._front_end.dateEdit_from.text() or
-                    self.date_to_prev != self._front_end.dateEdit_to.text() or
-                    self.time_frame != time_frame):
-                # self.data = get_quotes_list(ticker, start_date, end_date)  # Получение котировок
-
-                self.ticker_prev = ticker
-                self.date_from_prev = self._front_end.dateEdit_from.text()
-                self.date_to_prev = self._front_end.dateEdit_to.text()
-                self.time_frame = time_frame
-        except Exception as err:
-            print(f'{err}\n')
-            self._front_end.status_field.setText(f'<span style=\"color:#ff0000;\">WARNING:</span> {err}')
+        if ticker != '':
+            try:
+                if (self.ticker_prev != ticker or
+                        self.date_from_prev != self._front_end.dateEdit_from.text() or
+                        self.date_to_prev != self._front_end.dateEdit_to.text() or
+                        self.time_frame != time_frame):
+                    self.ticker_prev = ticker
+                    self.date_from_prev = self._front_end.dateEdit_from.text()
+                    self.date_to_prev = self._front_end.dateEdit_to.text()
+                    self.time_frame = time_frame
+                    self.data = get_quotes_tab(ticker, start_date, end_date)  # Получение котировок
+            except Exception as err:
+                print(f'{err}\n')
+                self._front_end.status_field.setText(f'<span style=\"color:#ff0000;\">WARNING:</span> {err}')
+            else:
+                print("Data's been received.\n")
+                self._front_end.status_field.setText("Data's been received.")
+                self.graphic_show(ticker, start_date, end_date)
         else:
-            print("Data's been received.\n")
-            self._front_end.status_field.setText("Data's been received.")
-            self.graphic_show()
+            print('No ticker\n')
+            self._front_end.status_field.setText("<span style=\"color:#ff0000;\">WARNING:</span> specify the ticker")
 
     # Функция построения графика
-    def graphic_show(self):
+    def graphic_show(self, _ticker, _start_date, _end_date):
         print(f'{self.data}\n')
-        x_list = range(len(self.data))
+        self.timer.stop()
 
         try:
-            self._front_end.graphic_field.axes.cla()
-            self._front_end.graphic_field.axes.plot(x_list, self.data, 'r')
-            self._front_end.graphic_field.draw()
+            y_data = []
+            open_data = self.data['Open'].values
+            close_data = self.data['Close'].values
+            for price in range(len(open_data)):
+                y_data.append(open_data[price])
+                y_data.append(close_data[price])
+            x_data = range(len(y_data))
+        except Exception as err:
+            print(f'{err}\n')
+            self._front_end.status_field.setText('<span style=\"color:#ff0000;\">WARNING:</span> no such ticker')
+        else:
+            try:
+                self._front_end.graphic_field.axes.cla()  # Очистка поля
+
+                # Основная часть выбора алгоритма и построения графика
+                graphic_name = self._front_end.comboBox_alg.currentText()
+
+                if graphic_name == 'ALGORITHM':
+                    print("No algorithm's been selected\n")
+                    self._front_end.graphic_field.axes.plot(x_data, y_data, c='black', zorder=1)
+                    self._front_end.graphic_field.axes.scatter(x_data, y_data,
+                                                               marker='^', c='g',
+                                                               s=4000 / (len(x_data) + 100),
+                                                               zorder=2)
+
+                elif graphic_name == 'DYNAMIC':
+                    print("Dynamic show has been selected\n")
+                    self.graphic_dynamic_show(_ticker)
+
+                # elif graphic_name == 'TEST':
+                #     print("Algorithm 'TEST' has been selected\n")
+                #
+                #     result, plot1, plot2 = plot_SMA(self.data, 10)
+                #     plot1(self._front_end.graphic_field.axes)
+                #     plot2(self._front_end.graphic_field.axes)
+                #     if result == 0:
+                #         self._front_end.status_field.setText("WAIT")
+
+
+                else:
+                    print('No such algorithm or data\n')
+
+            except Exception as err:
+                print(f'{err}\n')
+                self._front_end.status_field.setText(f'<span style=\"color:#ff0000;\">WARNING:</span> {err}')
+            else:
+                self._front_end.graphic_field.draw()  # Отображение графика
+                print("Plot's been built.\n")
+                if len(x_data) == 0:
+                    self._front_end.status_field.setText(
+                        f'<span style=\"color:#ff0000;\">WARNING:</span> decrease the time interval')
+                else:
+                    self._front_end.status_field.setText("Plot's been built.")
+
+
+    # Построить динамический график
+    def graphic_dynamic_show(self, _ticker):
+        self.n = 300
+
+        # Форматирование дат
+        start_date_raw = dt.datetime.strptime(
+            self._front_end.dateEdit_from.text(), '%d.%m.%Y')
+        end_date_raw = dt.datetime.strptime(
+            self._front_end.dateEdit_to.text(), '%d.%m.%Y')
+
+        # Автокоррекция дат
+        start_date = min(start_date_raw, end_date_raw)
+        end_date = max(start_date_raw, end_date_raw)
+
+        if (end_date - start_date).days < self.n:
+            start_date -= dt.timedelta(days=self.n)
+
+        try:
+            data = get_quotes_list(_ticker,
+                                   start_date,
+                                   end_date)
         except Exception as err:
             print(f'{err}\n')
             self._front_end.status_field.setText(f'<span style=\"color:#ff0000;\">WARNING:</span> {err}')
         else:
-            print("Plot's been built.\n")
-            self._front_end.status_field.setText("Plot's been built.")
+            self.duration = len(data)
+            self.iter = self.n
+            self.xdata = range(self.n)
+            self.ydata = data[:self.n]
+            self.quotes_generator = get_dynamic_quotes(data[self.n:])
+            self.update_plot()
 
-    # Тестовая функция
-    def graphic_dynamic_show(self):
-        n_data = 50
-        self.xdata = list(range(n_data))
-        self.ydata = [random.randint(0, 10) for _ in range(n_data)]
-        self.update_plot()
+            self.timer.setInterval(1000)
+            self.timer.timeout.connect(self.update_plot)
+            self.timer.start()
 
-        self.timer = QtCore.QTimer()
-        self.timer.setInterval(80)
-        self.timer.timeout.connect(self.update_plot)
-        self.timer.start()
-
-    # Тестовая вспомогательная функция
+    # Функция динамического обновления графика
     def update_plot(self):
-        # Drop off the first y element, append a new one.
-        self.ydata = self.ydata[1:] + [random.randint(0, 10)]
-        self._front_end.graphic_field.axes.cla()  # Clear the canvas.
-        self._front_end.graphic_field.axes.plot(self.xdata, self.ydata, 'r')
-        # Trigger the canvas to update and redraw.
-        self._front_end.graphic_field.draw()
+        if self.iter < self.duration:
+            self.iter += 1
+            self.ydata = self.ydata[1:] + [next(self.quotes_generator)]
+
+            self._front_end.graphic_field.axes.cla()
+            self._front_end.graphic_field.axes.plot(self.xdata, self.ydata, 'black')
+
+            self._front_end.graphic_field.draw()
+        else:
+            self.timer.stop()
 
     # Показать информацию об алгоритме
     def show_info(self):
+
+        # В инициализации добавить поля self для дополнительных переменных алгоритмов
+
         print("Dialog window's been opened.\n")
-        QtWidgets.QMessageBox.about(self, "INFO", "Info will be there soon:")
-        # text, ok = QtWidgets.QInputDialog.getText(self, 'INFO', 'Info will be there soon:')
+        self.popup = CustomDialog()
+        self.popup.show()
 
 
 if __name__ == '__main__':
@@ -162,8 +309,6 @@ if __name__ == '__main__':
     sys.exit(app.exec_())
 
 # Убираем все упоминания retranslateUi в файле tradeBot_GUI_front, переносим import MplCanvas новерх
-# QMessageBox - information / warning
-# QDialog (Box)
 
 # Добавлять в файл tradeBot_GUI_front:
 # from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
@@ -173,5 +318,3 @@ if __name__ == '__main__':
 #         self.tools_field.setMaximumSize(QtCore.QSize(16777215, 35))  # Размер панели
 #         self.tools_field.setObjectName("tools_field")
 #         self.verticalLayout.addWidget(self.tools_field)  # Отобразить панель в группе виджетов
-
-# Toolbar можно переписать

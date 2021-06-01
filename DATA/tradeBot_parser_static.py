@@ -10,6 +10,7 @@ import json
 def get_quotes_tab(_ticker, _start, _end):
     try:
         data = web.DataReader(_ticker, "yahoo", _start, _end)
+        data = data.drop(['Volume', 'Adj Close'], axis=1)  # Удаление столбцов
     except Exception as err:
         print(f'При получении котировок возникла ошибка: {err}')
     else:

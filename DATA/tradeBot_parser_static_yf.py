@@ -8,7 +8,7 @@ import json
 # Получить список списков yahoo-котировок тикера за указанный период в формате json
 # с возможностью выбора таймфрейма
 # Формат: [цена открытия, цена закрытия]
-def get_quotesY_json(_ticker, _start, _end, _timeframe='15m'):
+def get_quotesY_json(_ticker, _start, _end, _timeframe='1d'):
     try:
         dataY = yf.download(_ticker, _start, _end, interval=_timeframe)
     except Exception as err:
@@ -24,13 +24,14 @@ def get_quotesY_json(_ticker, _start, _end, _timeframe='15m'):
 
         # Добавление котировок в список quotes
         for price in range(len(open_dataY)):
-            quotesY.append([open_dataY[price], close_dataY[price]])
+            # quotesY.append([open_dataY[price], close_dataY[price]])
 
             # Возможно последовательное добавление
-            # quotes.append(open_data[price])
-            # quotes.append(close_data[price])
+            quotesY.append(open_dataY[price])
+            quotesY.append(close_dataY[price])
 
-        return json.dumps(quotesY, indent=2)  # json формат
+        # return json.dumps(quotesY, indent=2)  # json формат
+        return quotesY
     return None
 
 
@@ -40,6 +41,7 @@ def get_quotesY_json(_ticker, _start, _end, _timeframe='15m'):
 def get_quotesY_tab(_ticker, _start, _end, _timeframe='15m'):
     try:
         dataY = yf.download(_ticker, _start, _end, interval=_timeframe)
+        dataY = dataY.drop(['Volume', 'Adj Close'], axis=1)  # Удаление столбцов
     except Exception as err:
         print(f'При получении таблицы yahoo-котировок возникла ошибка: {err}')
     else:
