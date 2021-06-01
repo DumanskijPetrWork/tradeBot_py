@@ -3,7 +3,6 @@ import pandas_datareader as web
 import datetime as dt
 
 
-
 # usually close data
 
 # Simple moving average
@@ -115,8 +114,8 @@ def RSI(data, period):
     return result
 
 
-#Double Exponential Moving Average
-#https://en.wikipedia.org/wiki/Exponential_smoothing#Double_exponential_smoothing
+# Double Exponential Moving Average
+# https://en.wikipedia.org/wiki/Exponential_smoothing#Double_exponential_smoothing
 def DEMA(data, period):
     ema = EMA(data, period)
     ema_slice = ema[(period - 1):]
@@ -131,7 +130,7 @@ def DEMA(data, period):
     return result
 
 
-#Triple Exponential Moving Average
+# Triple Exponential Moving Average
 def TEMA(data, period):
     e1 = EMA(data, period)
     e1_slice = e1[(period - 1):]
@@ -155,22 +154,24 @@ def Bulls_power(data, period):
     result = data['High'] - EMA(data['Close'], period)
     return result
 
-def Bears_power(data,period):
+
+def Bears_power(data, period):
     result = data['Low'] - EMA(data['Close'], period)
     return result
 
-def Elder_Rays(data,period):
-    ema = EMA(data, period)
+
+def Elder_Rays(data, period):
+    ema = EMA(data['Close'], period)
     bulls = Bulls_power(data, period)
     bears = Bears_power(data, period)
     return ema, bulls, bears
 
 
-#https://ru.wikipedia.org/wiki/Индекс_массы_(технический_анализ)
-def MI(data,period):
+# https://ru.wikipedia.org/wiki/Индекс_массы_(технический_анализ)
+def MI(data, period):
     dataHL = data['High'] - data['Low']
-    ema = EMA(dataHL, 20)
-    dema = DEMA(dataHL, 20)
+    ema = EMA(dataHL, period)
+    dema = DEMA(dataHL, period)
     result = []
 
     for i in range(len(dataHL)):
@@ -178,13 +179,13 @@ def MI(data,period):
     return result
 
 
-#Индикатор волатильности Чайкина
-#https://equity.today/indikator-volatilnosti-chajkina.html
-def CHV(data,period):
-    dataHL = data['High']-data['Low']
+# Индикатор волатильности Чайкина
+# https://equity.today/indikator-volatilnosti-chajkina.html
+def CHV(data, period):
+    dataHL = data['High'] - data['Low']
     ema = EMA(dataHL, period)
     result = []
 
-    for i in range(len(dataHL)-period):
-        result.append((ema[i+period]-ema[i])/ema[i]*100)
+    for i in range(len(dataHL) - period):
+        result.append((ema[i + period] - ema[i]) / ema[i] * 100)
     return result

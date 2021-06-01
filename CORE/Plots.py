@@ -3,144 +3,109 @@ import Indicators
 from DATA.tradeBot_parser_static import get_quotes_tab
 import datetime as dt
 
+#я обозначил дата за 0, тк не обозначать нельзя
+# мне ее оставить пустой, чтобы она как глобальная переменная была,или добавить как аргумент?
+data = 0
 
 def plot_SMA(ticker, start, end, window):
-    data = get_quotes_tab(ticker, start, end)
-    data = data['Close']
-    sma = Indicators.SMA(data, window)
-    plt.plot(data)
-    plt.plot(sma)
-    plt.show()
+    sma = Indicators.SMA(data['Close'], window)
+
+    return 0, \
+           (lambda blank: blank.plot(sma)), \
+           (lambda blank: blank.plot(data['Close']))
 
 
-def plot_twoSMA(ticker, start, end):
-    data = get_quotes_tab(ticker, start, end)
-    data = data['Close']
-    smaShort = Indicators.SMA(data, 70)
-    smaLong = Indicators.SMA(data, 140)
-    plt.plot(data)
-    plt.plot(smaShort)
-    plt.plot(smaLong)
-    plt.show()
+#70 and 140
+def plot_twoSMA(ticker, start, end, window1, window2):
+    smaShort = Indicators.SMA(data['Close'], window1)
+    smaLong = Indicators.SMA(data['Close'], window2)
+
+    return 0, \
+           (lambda blank: blank.plot(smaShort)), \
+           (lambda blank: blank.plot(smaLong)), \
+           (lambda blank: blank.plot(data['Close']))
 
 
 def plot_EMA(ticker, start, end, window):
-    data = get_quotes_tab(ticker, start, end)
-    data = data['Close']
-    ema = Indicators.SMA(data, window)
-    plt.plot(data)
-    plt.plot(ema)
-    plt.show()
+    ema = Indicators.EMA(data['Close'], window)
 
-
-plot_EMA('SBER.ME', dt.datetime(2019, 1, 1), dt.datetime(2021, 5, 1), 100)
+    return 0, \
+           (lambda blank: blank.plot(ema)), \
+           (lambda blank: blank.plot(data['Close']))
 
 
 def plot_MACD(ticker, start, end, shortwindow, longwindow, signalwindow):
-    data = get_quotes_tab(ticker, start, end)
     macd = Indicators.MACD(data['Close'], shortwindow, longwindow, signalwindow)
 
-    plt.bar(data['Date'], macd[0])
-    plt.bar(data['Date'], macd[1])
-    plt.bar(data['Date'], macd[2])
-
-    plt.show()
-
+    return 0, \
+           (lambda blank: blank.bar(macd[0])), \
+           (lambda blank: blank.bar(macd[1])), \
+           (lambda blank: blank.bar(macd[2]))
 
 def plot_RSI(ticker, start, end, window):
-    data = Data.getAllQuotes(ticker, start, end)
-    data = data['Close']
+    rsi = Indicators.RSI(data['Close'], window)
 
-    rsi = Indicators.RSI(data, window)
-
-    plt.plot(rsi)
-    plt.plot([30] * len(data))
-    plt.plot([70] * len(data))
-
-    plt.show()
+    return 0, \
+           (lambda blank: blank.plot(rsi)), \
+           (lambda blank: blank.plot([30] * len(data['Close']))), \
+           (lambda blank: blank.plot([70] * len(data['Close'])))
 
 
 def plot_DEMA(ticker, start, end, window):
-    data = Data.getAllQuotes(ticker, start, end)
-    data = data['Close']
+    dema = Indicators.DEMA(data['Close'], window)
 
-    dema = Indicators.DEMA(data, window)
-
-    plt.plot(data)
-    plt.plot(dema)
-
-    plt.show()
+    return 0, \
+           (lambda blank: blank.plot(dema)), \
+           (lambda blank: blank.plot(data['Close']))
 
 
 def plot_TEMA(ticker, start, end, window):
-    data = Data.getAllQuotes(ticker, start, end)
-    data = data['Close']
+    tema = Indicators.TEMA(data['Close'], window)
 
-    tema = Indicators.TEMA(data, window)
-
-    plt.plot(data)
-    plt.plot(tema)
-
-    plt.show()
+    return 0, \
+           (lambda blank: blank.plot(tema)), \
+           (lambda blank: blank.plot(data['Close']))
 
 
-def plot_RSI(ticker, start, end, window):
-    data = get_quotes_tab(ticker, start, end)
-    data = data['Close']
+def plot_bulls(ticker, start, end, window):
+    bulls = Indicators.Bulls_power(data, window)
 
-    rsi = Indicators.RSI(data, window)
-
-    plt.plot(rsi)
-    plt.plot([30] * len(data))
-    plt.plot([70] * len(data))
-
-    plt.show()
+    return 0, \
+           (lambda blank: blank.plot(bulls)), \
+           (lambda blank: blank.plot(data['Close']))
 
 
-def plot_DEMA(ticker, start, end, window):
-    data = get_quotes_tab(ticker, start, end)
-    data = data['Close']
+def plot_bears(ticker, start, end, window):
+    bears = Indicators.Bears_power(data, window);
 
-    dema = Indicators.DEMA(data, window)
-
-    plt.plot(data)
-    plt.plot(dema)
-
-    plt.show()
+    return 0, \
+           (lambda blank: blank.plot(bears)), \
+           (lambda blank: blank.plot(data['Close']))
 
 
-def plot_TEMA(ticker, start, end, window):
-    data = get_quotes_tab(ticker, start, end)
-    data = data['Close']
+def plot_ER(ticker, start, end, window):
+    ema = Indicators.Elder_Rays(data, window)[0]
+    bulls = Indicators.Elder_Rays(data, window)[1]
+    bears = Indicators.Elder_Rays(data, window)[2]
 
-    tema = Indicators.TEMA(data, window)
+    return 0, \
+           (lambda blank: blank.plot(ema)), \
+           (lambda blank: blank.plot(bulls)), \
+           (lambda blank: blank.plot(bears)), \
+           (lambda blank: blank.plot(data['Close']))
 
-    plt.plot(data)
-    plt.plot(tema)
 
-    plt.show()
+def plot_MI(ticker, start, end, window):
+    mi = Indicators.MI(data, window)
+
+    return 0, \
+           (lambda blank: blank.plot(mi)), \
+           (lambda blank: blank.plot(data['Close']))
 
 
-import pandas_datareader as web
-import datetime as dt
-import plotly.graph_objs as go
+def plot_CHV(ticker, start, end, window):
+    chv = Indicators.CHV(data, window)
 
-ticker = 'TSLA'
-
-start = dt.datetime(2020, 1, 1)
-end = dt.datetime.now()
-
-df = web.DataReader(ticker, "yahoo", start, end)
-
-df = df.reset_index()
-
-fig = go.Figure(data=[go.Candlestick(
-    x=df['Date'],
-    open=df['Open'],
-    high=df['High'],
-    low=df['Low'],
-    close=df['Adj Close']
-
-)])
-
-# fig.show()
+    return 0, \
+           (lambda blank: blank.plot(chv)), \
+           (lambda blank: blank.plot(data['Close']))
