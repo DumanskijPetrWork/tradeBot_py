@@ -168,5 +168,23 @@ def Elder_Rays(data,period):
 
 #https://ru.wikipedia.org/wiki/Индекс_массы_(технический_анализ)
 def MI(data,period):
-    result = EMA(data['High']-data['Low'],period)/DEMA(data['High']-data['Low'],period)
+    dataHL = data['High'] - data['Low']
+    ema = EMA(dataHL, 20)
+    dema = DEMA(dataHL, 20)
+    result = []
 
+    for i in range(len(dataHL)):
+        result.append(ema[i] / dema[i])
+    return result
+
+
+#Индикатор волатильности Чайкина
+#https://equity.today/indikator-volatilnosti-chajkina.html
+def CHV(data,period):
+    dataHL = data['High']-data['Low']
+    ema = EMA(dataHL, period)
+    result = []
+
+    for i in range(len(dataHL)-period):
+        result.append((ema[i+period]-ema[i])/ema[i]*100)
+    return result
