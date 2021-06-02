@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QSizePolicy
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from popup_window_front import Ui_Form
+from GUI.popup_window_front import Ui_Form
 
 
 class MplCanvas(FigureCanvasQTAgg):

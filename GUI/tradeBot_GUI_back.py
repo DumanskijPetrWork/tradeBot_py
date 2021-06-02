@@ -3,12 +3,15 @@ import sys
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5.QtGui import QStandardItem, QColor
-from tradeBot_GUI_front import Ui_MainWindow
-from tradeBot_widget import CustomDialog
+from GUI.tradeBot_widget import CustomDialog
 from DATA.tradeBot_parser_static import *
 from DATA.tradeBot_parser_static_yf import *
 from DATA.tradeBot_parser_dynamic import get_dynamic_quotes
 from CORE.Plots import *
+if sys.platform == 'darwin':
+    from GUI.tradeBot_GUI_front import Ui_MainWindow
+else:
+    from GUI.tradeBot_GUI_front_win import Ui_MainWindow
 
 
 class BackEnd(QtWidgets.QMainWindow):
@@ -25,6 +28,7 @@ class BackEnd(QtWidgets.QMainWindow):
         self.data_len = 0  # Данные котировок
         self.extraData = []  # Данные котировок за период + 1 год
         self.timer = QtCore.QTimer()  # Таймер для динамики
+        self.risk = 2
 
         self._front_end = Ui_MainWindow()
         self._front_end.setupUi(self)
@@ -190,9 +194,12 @@ class BackEnd(QtWidgets.QMainWindow):
                     self.date_to_prev = self._front_end.dateEdit_to.text()
                     self.time_frame = time_frame
                     self.data = get_quotes_tab(ticker, start_date, end_date)  # Получение котировок
-                    if not self.data.empty:
-                        self.data_len = len(self.data)
-                        print(f'data_len: {self.data_len}\n')
+                    try:
+                        if (not self.data.empty):
+                            self.data_len = len(self.data)
+                            print(f'data_len: {self.data_len}\n')
+                    except Exception as err:
+                        pass
                     self.extraData = get_quotes_tab(ticker, prev_date, end_date)  # Получение котировок
             except Exception as err:
                 print(f'{err}\n')
@@ -243,7 +250,7 @@ class BackEnd(QtWidgets.QMainWindow):
                 elif graphic_name == 'SMA':
                     print("Algorithm 'SMA' has been selected\n")
 
-                    result, plot1, plot2 = plot_SMA(self.data_len, self.extraData)
+                    result, plot1, plot2 = plot_SMA(self.data_len, self.extraData, self.risk)
                     plot1(self._front_end.graphic_field.axes)
                     plot2(self._front_end.graphic_field.axes)
                     print(f'result: {result}')
@@ -260,7 +267,7 @@ class BackEnd(QtWidgets.QMainWindow):
                 elif graphic_name == 'twoSMA':
                     print("Algorithm 'twoSMA' has been selected\n")
 
-                    result, plot1, plot2, plot3 = plot_twoSMA(self.data_len, self.extraData)
+                    result, plot1, plot2, plot3 = plot_twoSMA(self.data_len, self.extraData, self.risk)
                     plot1(self._front_end.graphic_field.axes)
                     plot2(self._front_end.graphic_field.axes)
                     plot3(self._front_end.graphic_field.axes)
@@ -278,7 +285,7 @@ class BackEnd(QtWidgets.QMainWindow):
                 elif graphic_name == 'EMA':
                     print("Algorithm 'EMA' has been selected\n")
 
-                    result, plot1, plot2 = plot_EMA(self.data_len, self.extraData)
+                    result, plot1, plot2 = plot_EMA(self.data_len, self.extraData, self.risk)
                     plot1(self._front_end.graphic_field.axes)
                     plot2(self._front_end.graphic_field.axes)
                     print(f'result: {result}')
@@ -295,7 +302,7 @@ class BackEnd(QtWidgets.QMainWindow):
                 elif graphic_name == 'DEMA':
                     print("Algorithm 'DEMA' has been selected\n")
 
-                    result, plot1, plot2 = plot_DEMA(self.data_len, self.extraData)
+                    result, plot1, plot2 = plot_DEMA(self.data_len, self.extraData, self.risk)
                     plot1(self._front_end.graphic_field.axes)
                     plot2(self._front_end.graphic_field.axes)
                     print(f'result: {result}')
@@ -312,7 +319,7 @@ class BackEnd(QtWidgets.QMainWindow):
                 elif graphic_name == 'TEMA':
                     print("Algorithm 'TEMA' has been selected\n")
 
-                    result, plot1, plot2 = plot_TEMA(self.data_len, self.extraData)
+                    result, plot1, plot2 = plot_TEMA(self.data_len, self.extraData, self.risk)
                     plot1(self._front_end.graphic_field.axes)
                     plot2(self._front_end.graphic_field.axes)
                     print(f'result: {result}')
@@ -329,7 +336,7 @@ class BackEnd(QtWidgets.QMainWindow):
                 elif graphic_name == 'RSI':
                     print("Algorithm 'RSI' has been selected\n")
 
-                    result, plot1, plot2, plot3 = plot_RSI(self.data_len, self.extraData)
+                    result, plot1, plot2, plot3 = plot_RSI(self.data_len, self.extraData, self.risk)
                     self._front_end.graphic_field.axes.set_ylim([0, 100])
                     plot1(self._front_end.graphic_field.axes)
                     plot2(self._front_end.graphic_field.axes)
@@ -348,7 +355,7 @@ class BackEnd(QtWidgets.QMainWindow):
                 elif graphic_name == 'MACD':
                     print("Algorithm 'MACD' has been selected\n")
 
-                    result, plot1, plot2, plot3 = plot_MACD(self.data_len, self.extraData)
+                    result, plot1, plot2, plot3 = plot_MACD(self.data_len, self.extraData, self.risk)
                     plot1(self._front_end.graphic_field.axes)
                     plot2(self._front_end.graphic_field.axes)
                     plot3(self._front_end.graphic_field.axes)
@@ -366,7 +373,7 @@ class BackEnd(QtWidgets.QMainWindow):
                 elif graphic_name == 'bullsPOWER':
                     print("Algorithm 'bullsPOWER' has been selected\n")
 
-                    result, plot1, plot2 = plot_bulls(self.data_len, self.extraData)
+                    result, plot1, plot2 = plot_bulls(self.data_len, self.extraData, self.risk)
                     plot1(self._front_end.graphic_field.axes)
                     plot2(self._front_end.graphic_field.axes)
                     print(f'result: {result}')
@@ -383,7 +390,7 @@ class BackEnd(QtWidgets.QMainWindow):
                 elif graphic_name == 'bearsPOWER':
                     print("Algorithm 'bearsPOWER' has been selected\n")
 
-                    result, plot1, plot2 = plot_bears(self.data_len, self.extraData)
+                    result, plot1, plot2 = plot_bears(self.data_len, self.extraData, self.risk)
                     plot1(self._front_end.graphic_field.axes)
                     plot2(self._front_end.graphic_field.axes)
                     print(f'result: {result}')
@@ -400,7 +407,7 @@ class BackEnd(QtWidgets.QMainWindow):
                 elif graphic_name == 'Elder-rays':
                     print("Algorithm 'Elder-rays' has been selected\n")
 
-                    result, plot1, plot2, plot3, plot4 = plot_ER(self.data_len, self.extraData)
+                    result, plot1, plot2, plot3, plot4 = plot_ER(self.data_len, self.extraData, self.risk)
                     plot1(self._front_end.graphic_field.axes)
                     plot2(self._front_end.graphic_field.axes)
                     plot3(self._front_end.graphic_field.axes)
@@ -438,7 +445,7 @@ class BackEnd(QtWidgets.QMainWindow):
                 elif graphic_name == 'CHV':
                     print("Algorithm 'CHV' has been selected\n")
 
-                    result, plot1, plot2 = plot_CHV(self.data_len, self.extraData)
+                    result, plot1, plot2 = plot_CHV(self.data_len, self.extraData, self.risk)
                     plot1(self._front_end.graphic_field.axes)
                     plot2(self._front_end.graphic_field.axes)
                     print(f'result: {result}')
@@ -514,6 +521,18 @@ class BackEnd(QtWidgets.QMainWindow):
         else:
             self.timer.stop()
 
+    def risk_1(self):
+        self.risk = 1
+        print(f'risk: {self.risk}\n')
+
+    def risk_2(self):
+        self.risk = 2
+        print(f'risk: {self.risk}\n')
+
+    def risk_3(self):
+        self.risk = 3
+        print(f'risk: {self.risk}\n')
+
     # Показать информацию об алгоритме
     def show_info(self):
 
@@ -521,6 +540,10 @@ class BackEnd(QtWidgets.QMainWindow):
 
         print("Dialog window's been opened.\n")
         self.popup = CustomDialog()
+
+        self.popup._front_end.radioButton_1.toggled.connect(self.risk_1)
+        self.popup._front_end.radioButton_2.toggled.connect(self.risk_2)
+        self.popup._front_end.radioButton_3.toggled.connect(self.risk_3)
 
         graphic_name = self._front_end.comboBox_alg.currentText()
         if graphic_name == 'ALGORITHM':
