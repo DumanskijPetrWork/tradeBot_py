@@ -5,10 +5,10 @@ from PyQt5 import QtCore
 from PyQt5.QtGui import QStandardItem, QColor
 from tradeBot_GUI_front import Ui_MainWindow
 from tradeBot_widget import CustomDialog
-# from tester import plot_SMA
 from DATA.tradeBot_parser_static import *
 from DATA.tradeBot_parser_static_yf import *
 from DATA.tradeBot_parser_dynamic import get_dynamic_quotes
+from CORE.Plots import *
 
 
 class BackEnd(QtWidgets.QMainWindow):
@@ -17,7 +17,7 @@ class BackEnd(QtWidgets.QMainWindow):
 
         # Предыдущие значения полей для предотвращения излишних запросов
         self.ticker_prev = ''
-        self.date_from_prev = dt.date.today() - dt.timedelta(days=30)
+        self.date_from_prev = dt.date.today() - dt.timedelta(days=360)
         self.date_to_prev = dt.date.today()
         self.time_frame = '1d'
 
@@ -41,7 +41,7 @@ class BackEnd(QtWidgets.QMainWindow):
         self._front_end.ticker_edit.setPlaceholderText("TICKER")
 
         # Инициализация начальной даты
-        self._front_end.dateEdit_from.setDate(dt.date.today() - dt.timedelta(days=30))
+        self._front_end.dateEdit_from.setDate(dt.date.today() - dt.timedelta(days=360))
         self._front_end.dateEdit_from.setMaximumDate(dt.date.today())
 
         # Инициализация конечной даты
@@ -53,7 +53,18 @@ class BackEnd(QtWidgets.QMainWindow):
         self.model_comboBox_alg = self._front_end.comboBox_alg.model()
         for name in ["ALGORITHM",
                      "DYNAMIC",
-                     "TEST"]:
+                     "SMA",
+                     "twoSMA",
+                     "EMA",
+                     "DEMA",
+                     "TEMA",
+                     "RSI",
+                     "MACD",
+                     "bullsPOWER",
+                     "bearsPOWER",
+                     "Elder-rays",
+                     "MASS INDEX",
+                     "CHV"]:
             item = QStandardItem(name)
             item.setBackground(QColor('white'))
             self.model_comboBox_alg.appendRow(item)
@@ -207,24 +218,226 @@ class BackEnd(QtWidgets.QMainWindow):
                 if graphic_name == 'ALGORITHM':
                     print("No algorithm's been selected\n")
                     self._front_end.graphic_field.axes.plot(x_data, y_data, c='black', zorder=1)
-                    self._front_end.graphic_field.axes.scatter(x_data, y_data,
-                                                               marker='^', c='g',
-                                                               s=4000 / (len(x_data) + 100),
-                                                               zorder=2)
+                    # self._front_end.graphic_field.axes.scatter(x_data, y_data,
+                    #                                            marker='^', c='g',
+                    #                                            s=4000 / (len(x_data) + 100),
+                    #                                            zorder=2)
 
                 elif graphic_name == 'DYNAMIC':
                     print("Dynamic show has been selected\n")
                     self.graphic_dynamic_show(_ticker)
 
-                # elif graphic_name == 'TEST':
-                #     print("Algorithm 'TEST' has been selected\n")
-                #
-                #     result, plot1, plot2 = plot_SMA(self.data, 10)
-                #     plot1(self._front_end.graphic_field.axes)
-                #     plot2(self._front_end.graphic_field.axes)
-                #     if result == 0:
-                #         self._front_end.status_field.setText("WAIT")
+                elif graphic_name == 'SMA':
+                    print("Algorithm 'SMA' has been selected\n")
 
+                    result, plot1, plot2 = plot_SMA(self.data)
+                    plot1(self._front_end.graphic_field.axes)
+                    plot2(self._front_end.graphic_field.axes)
+                    print(f'result: {result}')
+                    if result == 0:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#ff0000;\">SELL</span>')
+                    elif result == 1:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#fff700;\">WAIT</span>')
+                    elif result == 2:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#70ff00;\">BUY</span>')
+
+                elif graphic_name == 'twoSMA':
+                    print("Algorithm 'twoSMA' has been selected\n")
+
+                    result, plot1, plot2, plot3 = plot_twoSMA(self.data)
+                    plot1(self._front_end.graphic_field.axes)
+                    plot2(self._front_end.graphic_field.axes)
+                    plot3(self._front_end.graphic_field.axes)
+                    print(f'result: {result}')
+                    if result == 0:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#ff0000;\">SELL</span>')
+                    elif result == 1:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#fff700;\">WAIT</span>')
+                    elif result == 2:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#70ff00;\">BUY</span>')
+
+                elif graphic_name == 'EMA':
+                    print("Algorithm 'EMA' has been selected\n")
+
+                    result, plot1, plot2 = plot_EMA(self.data)
+                    plot1(self._front_end.graphic_field.axes)
+                    plot2(self._front_end.graphic_field.axes)
+                    print(f'result: {result}')
+                    if result == 0:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#ff0000;\">SELL</span>')
+                    elif result == 1:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#fff700;\">WAIT</span>')
+                    elif result == 2:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#70ff00;\">BUY</span>')
+
+                elif graphic_name == 'DEMA':
+                    print("Algorithm 'DEMA' has been selected\n")
+
+                    result, plot1, plot2 = plot_DEMA(self.data)
+                    plot1(self._front_end.graphic_field.axes)
+                    plot2(self._front_end.graphic_field.axes)
+                    print(f'result: {result}')
+                    if result == 0:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#ff0000;\">SELL</span>')
+                    elif result == 1:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#fff700;\">WAIT</span>')
+                    elif result == 2:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#70ff00;\">BUY</span>')
+
+                elif graphic_name == 'TEMA':
+                    print("Algorithm 'TEMA' has been selected\n")
+
+                    result, plot1, plot2 = plot_TEMA(self.data)
+                    plot1(self._front_end.graphic_field.axes)
+                    plot2(self._front_end.graphic_field.axes)
+                    print(f'result: {result}')
+                    if result == 0:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#ff0000;\">SELL</span>')
+                    elif result == 1:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#fff700;\">WAIT</span>')
+                    elif result == 2:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#70ff00;\">BUY</span>')
+
+                elif graphic_name == 'RSI':
+                    print("Algorithm 'RSI' has been selected\n")
+
+                    result, plot1, plot2, plot3 = plot_RSI(self.data)
+                    self._front_end.graphic_field.axes.set_ylim([0, 100])
+                    plot1(self._front_end.graphic_field.axes)
+                    plot2(self._front_end.graphic_field.axes)
+                    plot3(self._front_end.graphic_field.axes)
+                    print(f'result: {result}')
+                    if result == 0:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#ff0000;\">SELL</span>')
+                    elif result == 1:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#fff700;\">WAIT</span>')
+                    elif result == 2:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#70ff00;\">BUY</span>')
+
+                elif graphic_name == 'MACD':
+                    print("Algorithm 'MACD' has been selected\n")
+
+                    result, plot1, plot2, plot3 = plot_MACD(self.data)
+                    plot1(self._front_end.graphic_field.axes)
+                    plot2(self._front_end.graphic_field.axes)
+                    plot3(self._front_end.graphic_field.axes)
+                    print(f'result: {result}')
+                    if result == 0:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#ff0000;\">SELL</span>')
+                    elif result == 1:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#fff700;\">WAIT</span>')
+                    elif result == 2:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#70ff00;\">BUY</span>')
+
+                elif graphic_name == 'bullsPOWER':
+                    print("Algorithm 'bullsPOWER' has been selected\n")
+
+                    result, plot1, plot2 = plot_bulls(self.data)
+                    plot1(self._front_end.graphic_field.axes)
+                    plot2(self._front_end.graphic_field.axes)
+                    print(f'result: {result}')
+                    if result == 0:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#ff0000;\">SELL</span>')
+                    elif result == 1:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#fff700;\">WAIT</span>')
+                    elif result == 2:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#70ff00;\">BUY</span>')
+
+                elif graphic_name == 'bearsPOWER':
+                    print("Algorithm 'bearsPOWER' has been selected\n")
+
+                    result, plot1, plot2 = plot_bears(self.data)
+                    plot1(self._front_end.graphic_field.axes)
+                    plot2(self._front_end.graphic_field.axes)
+                    print(f'result: {result}')
+                    if result == 0:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#ff0000;\">SELL</span>')
+                    elif result == 1:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#fff700;\">WAIT</span>')
+                    elif result == 2:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#70ff00;\">BUY</span>')
+
+                elif graphic_name == 'Elder-rays':
+                    print("Algorithm 'Elder-rays' has been selected\n")
+
+                    result, plot1, plot2, plot3, plot4 = plot_ER(self.data)
+                    plot1(self._front_end.graphic_field.axes)
+                    plot2(self._front_end.graphic_field.axes)
+                    plot3(self._front_end.graphic_field.axes)
+                    plot4(self._front_end.graphic_field.axes)
+                    print(f'result: {result}')
+                    if result == 0:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#ff0000;\">SELL</span>')
+                    elif result == 1:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#fff700;\">WAIT</span>')
+                    elif result == 2:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#70ff00;\">BUY</span>')
+
+                elif graphic_name == 'MASS INDEX':
+                    print("Algorithm 'MASS INDEX' has been selected\n")
+
+                    result, plot1, plot2, plot3, plot4 = plot_MI(self.data)
+                    plot1(self._front_end.graphic_field.axes)
+                    plot2(self._front_end.graphic_field.axes)
+                    plot3(self._front_end.graphic_field.axes)
+                    plot4(self._front_end.graphic_field.axes)
+                    print(f'result: {result}')
+                    if result == 0:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#ff0000;\">SELL</span>')
+                    elif result == 1:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#fff700;\">WAIT</span>')
+                    elif result == 2:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#70ff00;\">BUY</span>')
+
+                elif graphic_name == 'CHV':
+                    print("Algorithm 'CHV' has been selected\n")
+
+                    result, plot1, plot2 = plot_CHV(self.data)
+                    plot1(self._front_end.graphic_field.axes)
+                    plot2(self._front_end.graphic_field.axes)
+                    print(f'result: {result}')
+                    if result == 0:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#ff0000;\">SELL</span>')
+                    elif result == 1:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#fff700;\">WAIT</span>')
+                    elif result == 2:
+                        self._front_end.status_field.setText(
+                            'RECOMMENDATION: <span style=\"color:#70ff00;\">BUY</span>')
 
                 else:
                     print('No such algorithm or data\n')
@@ -238,9 +451,6 @@ class BackEnd(QtWidgets.QMainWindow):
                 if len(x_data) == 0:
                     self._front_end.status_field.setText(
                         f'<span style=\"color:#ff0000;\">WARNING:</span> decrease the time interval')
-                else:
-                    self._front_end.status_field.setText("Plot's been built.")
-
 
     # Построить динамический график
     def graphic_dynamic_show(self, _ticker):

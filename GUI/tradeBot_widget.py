@@ -27,13 +27,60 @@ class CustomDialog(QtWidgets.QDialog):
         self.setModal(True)
         self.is_visible = False
 
-        self._front_end.algorithm_info.setText(
-            '<a href="https://stockanalysis.com/stocks/">ALL TICKERS HERE</a>')
-        self._front_end.algorithm_info.setOpenExternalLinks(True)
+        self._front_end.link_label.setText(
+            '<a href="https://stockanalysis.com/stocks/">ALL TICKERS ARE HERE</a>')
+        self._front_end.link_label.setOpenExternalLinks(True)
+
+        self._front_end.algorithm_info.setText('SOME INFO ABOUT ALGORITHM')
         self._front_end.algorithm_info.setVisible(False)
 
         self._front_end.info_show_hide_button.clicked.connect(self.popup_show_info)
         self._front_end.close_button.clicked.connect(self.popup_close)
+
+        # graphic_name = ap._front_end.comboBox_alg.currentText()
+        # print(f'graphic_name: {graphic_name}')
+        graphic_name = ''
+        if graphic_name == 'ALGORITHM':
+            pass
+
+        elif graphic_name == 'DYNAMIC':
+            pass
+
+        elif graphic_name == 'SMA':
+            pass
+
+        elif graphic_name == 'twoSMA':
+            pass
+
+        elif graphic_name == 'EMA':
+            pass
+
+        elif graphic_name == 'DEMA':
+            pass
+
+        elif graphic_name == 'TEMA':
+            pass
+
+        elif graphic_name == 'RSI':
+            pass
+
+        elif graphic_name == 'MACD':
+            pass
+
+        elif graphic_name == 'bullsPOWER':
+            pass
+
+        elif graphic_name == 'bearsPOWER':
+            pass
+
+        elif graphic_name == 'Elder-rays':
+            pass
+
+        elif graphic_name == 'MASS INDEX':
+            pass
+
+        elif graphic_name == 'CHV':
+            pass
 
     def popup_show_info(self):
         if self.is_visible:
