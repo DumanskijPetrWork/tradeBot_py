@@ -14,7 +14,13 @@ import datetime as dt
 #      n = 0 - продавать
 
 
-def plot_SMA(lenData, data, window=50):
+def plot_SMA(lenData, data, risk=2):
+    if risk == 1:
+        window = 100  # низкий риск
+    elif risk == 3:  # высокий риск
+        window = 10
+    else:  # средний риска
+        window = 50
     sma = SMA(data['Close'], window)
 
     sma = sma[(-lenData):]
@@ -32,8 +38,17 @@ def plot_SMA(lenData, data, window=50):
            lambda blank: blank.plot(data['Date'], data['Close'])
 
 
-# 70 and 140
-def plot_twoSMA(lenData, data, window1=70, window2=140):
+def plot_twoSMA(lenData, data, risk=2):
+    if risk == 1:  # низкий риск
+        window1 = 70
+        window2 = 140
+    elif risk == 3:  # высокий риск
+        window1 = 25
+        window2 = 50
+    else:  # средний риска
+        window1 = 5
+        window2 = 10
+
     smaShort = SMA(data['Close'], window1)
     smaLong = SMA(data['Close'], window2)
 
@@ -54,7 +69,14 @@ def plot_twoSMA(lenData, data, window1=70, window2=140):
            lambda blank: blank.plot(data['Date'], data['Close'])
 
 
-def plot_EMA(lenData, data, window=50):
+def plot_EMA(lenData, data, risk=2):
+    if risk == 1:
+        window = 100  # низкий риск
+    elif risk == 3:  # высокий риск
+        window = 10
+    else:  # средний риска
+        window = 50
+
     ema = EMA(data['Close'], window)
 
     ema = ema[(-lenData):]
@@ -72,7 +94,14 @@ def plot_EMA(lenData, data, window=50):
            lambda blank: blank.plot(data['Date'], data['Close'])
 
 
-def plot_DEMA(lenData, data, window=50):
+def plot_DEMA(lenData, data, risk=2):
+    if risk == 1:
+        window = 100  # низкий риск
+    elif risk == 3:  # высокий риск
+        window = 10
+    else:  # средний риска
+        window = 50
+
     dema = DEMA(data['Close'], window)
 
     dema = dema[(-lenData):]
@@ -90,7 +119,14 @@ def plot_DEMA(lenData, data, window=50):
            lambda blank: blank.plot(data['Date'], data['Close'])
 
 
-def plot_TEMA(lenData, data, window=50):
+def plot_TEMA(lenData, data, risk=2):
+    if risk == 1:
+        window = 100  # низкий риск
+    elif risk == 3:  # высокий риск
+        window = 10
+    else:  # средний риска
+        window = 50
+
     tema = TEMA(data['Close'], window)
 
     tema = tema[(-lenData):]
@@ -108,7 +144,14 @@ def plot_TEMA(lenData, data, window=50):
            lambda blank: blank.plot(data['Date'], data['Close'])
 
 
-def plot_RSI(lenData, data, window=50):
+def plot_RSI(lenData, data, risk=2):
+    if risk == 1:
+        window = 100  # низкий риск
+    elif risk == 3:  # высокий риск
+        window = 10
+    else:  # средний риска
+        window = 50
+
     rsi = RSI(data['Close'], window)
 
     rsi = rsi[(-lenData):]
@@ -127,7 +170,16 @@ def plot_RSI(lenData, data, window=50):
            lambda blank: blank.plot(data['Date'], [70] * len(data['Close']))
 
 
-def plot_MACD(lenData, data, shortwindow=12, longwindow=26, signalwindow=9):
+def plot_MACD(lenData, data, risk=1):
+    if risk == 1:  # низкий риск
+        shortwindow = 12
+        longwindow = 26
+        signalwindow = 9
+    else:  # высокий риск
+        shortwindow = 5
+        longwindow = 35
+        signalwindow = 5
+
     macd_all = MACD(data['Close'], shortwindow, longwindow, signalwindow)
 
     macd = macd_all[0]
@@ -139,7 +191,6 @@ def plot_MACD(lenData, data, shortwindow=12, longwindow=26, signalwindow=9):
     macdhist = macdhist[(-lenData):]
     data = data[(-lenData):]
 
-
     if (macdhist[-1] <= macdsignal[-1] and macdhist[-2] > macdsignal[-2]):
         n = 0
     elif (macdhist[-1] >= macdsignal[-1] and macdhist[-2] < macdsignal[-2]):
@@ -149,12 +200,18 @@ def plot_MACD(lenData, data, shortwindow=12, longwindow=26, signalwindow=9):
 
     return n, \
            lambda blank: blank.plot(data['Date'], macdsignal, zorder=3), \
-           lambda blank: blank.bar(data['Date'], macdhist, zorder=2),\
+           lambda blank: blank.bar(data['Date'], macdhist, zorder=2), \
            lambda blank: blank.bar(data['Date'], macd, zorder=1)
 
 
+def plot_bulls(lenData, data, risk=2):
+    if risk == 1:
+        window = 100  # низкий риск
+    elif risk == 3:  # высокий риск
+        window = 10
+    else:  # средний риска
+        window = 50
 
-def plot_bulls(lenData, data, window=50):
     bulls = Bulls_power(data, window)
 
     bulls = bulls[(-lenData):]
@@ -170,7 +227,14 @@ def plot_bulls(lenData, data, window=50):
            (lambda blank: blank.plot(data['Date'], data['Close']))
 
 
-def plot_bears(lenData, data, window=50):
+def plot_bears(lenData, data, risk=2):
+    if risk == 1:
+        window = 100  # низкий риск
+    elif risk == 3:  # высокий риск
+        window = 10
+    else:  # средний риска
+        window = 50
+
     bears = Bears_power(data, window);
 
     bears = bears[(-lenData):]
@@ -186,7 +250,14 @@ def plot_bears(lenData, data, window=50):
            (lambda blank: blank.plot(data['Date'], data['Close']))
 
 
-def plot_ER(lenData, data, window=50):
+def plot_ER(lenData, data, risk=2):
+    if risk == 1:
+        window = 100  # низкий риск
+    elif risk == 3:  # высокий риск
+        window = 10
+    else:  # средний риска
+        window = 50
+
     ema = Elder_Rays(data, window)[0]
     bulls = Elder_Rays(data, window)[1]
     bears = Elder_Rays(data, window)[2]
@@ -210,8 +281,8 @@ def plot_ER(lenData, data, window=50):
            (lambda blank: blank.plot(data['Date'], data['Close']))
 
 
-def plot_MI(lenData, data, window=9):
-    mi = MI(data, window)
+def plot_MI(lenData, data):
+    mi = MI(data, 9)
 
     result = []
     for i in range(len(mi) - 49):
@@ -240,7 +311,14 @@ def plot_MI(lenData, data, window=9):
            lambda blank: blank.plot(data['Date'], [26.5] * len(data['Close']))
 
 
-def plot_CHV(lenData, data, window=50):
+def plot_CHV(lenData, data, risk=2):
+    if risk == 1:
+        window = 100  # низкий риск
+    elif risk == 3:  # высокий риск
+        window = 10
+    else:  # средний риска
+        window = 50
+
     chv = CHV(data, window)
 
     chv = chv[(-lenData):]
