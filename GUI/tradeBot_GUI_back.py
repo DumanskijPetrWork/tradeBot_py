@@ -190,7 +190,9 @@ class BackEnd(QtWidgets.QMainWindow):
                     self.date_to_prev = self._front_end.dateEdit_to.text()
                     self.time_frame = time_frame
                     self.data = get_quotes_tab(ticker, start_date, end_date)  # Получение котировок
-                    self.data_len = len(self.data)
+                    if not self.data.empty:
+                        self.data_len = len(self.data)
+                        print(f'data_len: {self.data_len}\n')
                     self.extraData = get_quotes_tab(ticker, prev_date, end_date)  # Получение котировок
             except Exception as err:
                 print(f'{err}\n')
@@ -417,11 +419,11 @@ class BackEnd(QtWidgets.QMainWindow):
                 elif graphic_name == 'MASS INDEX':
                     print("Algorithm 'MASS INDEX' has been selected\n")
 
-                    result, plot1, plot2, plot3, plot4 = plot_MI(self.data_len, self.extraData)
+                    result, plot1, plot2, plot3 = plot_MI(self.data_len, self.extraData)
                     plot1(self._front_end.graphic_field.axes)
                     plot2(self._front_end.graphic_field.axes)
                     plot3(self._front_end.graphic_field.axes)
-                    plot4(self._front_end.graphic_field.axes)
+
                     print(f'result: {result}')
                     if result == 0:
                         self._front_end.status_field.setText(
